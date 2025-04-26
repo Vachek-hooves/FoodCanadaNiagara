@@ -1,11 +1,14 @@
 import {NavigationContainer} from '@react-navigation/native';
-import TabNav from './src/navigation/TabNav';
+
 import StackNav from './src/navigation/Stack';
+import {StoreProvider} from './src/store/context';
 
 const App = () => {
   return (
     <NavigationContainer>
-      <StackNav />
+      <StoreProvider>
+        <StackNav />
+      </StoreProvider>
     </NavigationContainer>
   );
 };

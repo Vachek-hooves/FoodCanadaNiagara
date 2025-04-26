@@ -1,9 +1,10 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Image, StyleSheet} from 'react-native';
-import Home from '../screen/tab/Home';
 import Receipts from '../screen/tab/Receipts';
 import Notes from '../screen/tab/Notes';
 import Settings from '../screen/tab/Settings';
+
+import Home from '../screen/tab/Home';
 
 const Tab = createBottomTabNavigator();
 

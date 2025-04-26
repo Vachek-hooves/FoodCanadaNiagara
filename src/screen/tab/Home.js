@@ -7,40 +7,86 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Layout from '../../components/Layout';
+import {useEffect, useState} from 'react';
+import {categories} from '../../data/categories';
+import {exploreCategories} from '../../data/exploreCategories';
 import {dishes} from '../../data/dishes';
 import {useNavigation} from '@react-navigation/native';
+import {useStore} from '../../store/context';
+
+import DishCard from '../../components/DishCard';
+import Layout from '../../components/Layout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AllRecipesCard from '../../components/AllRecipesCard';
 
 const Home = () => {
   const navigation = useNavigation();
+  const [showFavorites, setShowFavorites] = useState(false);
+  const {favorites, setFavorites} = useStore();
+  const [filteredCategory, setFilteredCategory] = useState(favorites);
+  const [checkCategory, setCheckCategory] = useState(categories);
+
+  useEffect(() => {
+    const getFavorites = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('favorites');
+        let favoritesList = jsonValue !== null ? JSON.parse(jsonValue) : [];
+
+        setFavorites(favoritesList);
+      } catch (e) {
+        console.error('Failed to add item to favorites:', e);
+      }
+    };
+    getFavorites();
+  }, []);
 
   const popularDishes = [...dishes].sort(() => Math.random() - 0.5);
 
-  const categories = [
-    {
-      category: 'Breakfast',
-      image: require('../../../assets/images/category1.png'),
-    },
-    {
-      category: 'Lunch',
-      image: require('../../../assets/images/category2.png'),
-    },
-    {
-      category: 'Dinner',
-      image: require('../../../assets/images/category3.png'),
-    },
-    {
-      category: 'Snacks',
-      image: require('../../../assets/images/category4.png'),
-    },
-  ];
+  const selectCategory = selectedCategory => {
+    const filteredByCategory = favorites.filter(
+      favorite => favorite.category === selectedCategory.category,
+    );
+
+    const checked = categories.map(cat => {
+      if (cat.id === selectedCategory.id) {
+        return {
+          ...cat,
+          checked: true,
+        };
+      }
+      return {
+        ...cat,
+        checked: false,
+      };
+    });
+    setCheckCategory(checked);
+    setFilteredCategory(filteredByCategory);
+  };
+
+  // useEffect(() => {
+  //   AsyncStorage.clear();
+  // }, []);
 
   return (
     <Layout>
       <ScrollView>
         <View style={{marginHorizontal: 16}}>
           <View style={styles.headerContainer}>
-            <Image source={require('../../../assets/images/icons/fav.png')} />
+            <TouchableOpacity
+              onPress={() => {
+                setShowFavorites(!showFavorites);
+              }}>
+              {showFavorites ? (
+                <Image
+                  source={require('../../../assets/images/icons/favChecked.png')}
+                />
+              ) : (
+                <Image
+                  source={require('../../../assets/images/icons/fav.png')}
+                />
+              )}
+            </TouchableOpacity>
+
             <Text style={styles.headerTitle}>Food Canada Niagara</Text>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -62,50 +108,26 @@ const Home = () => {
               style={styles.inputImage}
             />
           </View>
-
-          <Text style={styles.blockTitleText}>Popular recipes</Text>
         </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{paddingLeft: 16}}>
-          {popularDishes.map(dish => (
-            <View style={styles.popularRecipesCard} key={dish.id}>
-              <Image source={dish.image} style={styles.popularRecipeImage} />
-              <View style={{padding: 10}}>
-                <Text numberOfLines={1} style={styles.popularRecipeTitle}>
-                  {dish.title}
-                </Text>
-                <Text numberOfLines={1} style={styles.popularRecipeDescription}>
-                  {dish.description}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginTop: 12,
-                  }}>
-                  <Text style={styles.popularRecipeDifficulty}>
-                    {dish.dfficulty}
-                  </Text>
-                  <Image
-                    source={require('../../../assets/images/icons/heartOutline.png')}
-                  />
-                </View>
-              </View>
+        {!showFavorites && (
+          <View>
+            <View style={{marginHorizontal: 16}}>
+              <Text style={styles.blockTitleText}>Popular recipes</Text>
             </View>
-          ))}
-        </ScrollView>
-        <View style={{marginHorizontal: 16, marginBottom: 20}}>
-          <Text style={styles.blockTitleText}>Explore categories</Text>
-        </View>
 
-        <View style={styles.categoriesContainer}>
-          {categories.map(
-            (category, idx) => (
-              console.log('category', category.category),
-              (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{paddingLeft: 16}}>
+              {popularDishes.map(dish => (
+                <DishCard dish={dish} key={dish.id} />
+              ))}
+            </ScrollView>
+            <View style={{marginHorizontal: 16, marginBottom: 20}}>
+              <Text style={styles.blockTitleText}>Explore categories</Text>
+            </View>
+            <View style={styles.categoriesContainer}>
+              {exploreCategories.map((category, idx) => (
                 <TouchableOpacity
                   activeOpacity={0.7}
                   key={idx}
@@ -127,11 +149,80 @@ const Home = () => {
                     {category.category}
                   </Text>
                 </TouchableOpacity>
-              )
-            ),
+              ))}
+            </View>
+          </View>
+        )}
+        <View>
+          {showFavorites && (
+            <ScrollView>
+              <View>
+                {favorites.length === 0 ? (
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      marginTop: 150,
+                      marginHorizontal: 40,
+                    }}>
+                    <Image
+                      source={require('../../../assets/images/icons/close.png')}
+                    />
+                    <Text style={styles.closeText}>
+                      There are no favourite receipts, add some from the list
+                    </Text>
+                  </View>
+                ) : (
+                  <View>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          flexWrap: 'wrap',
+                          gap: 16,
+                          marginBottom: 20,
+                          paddingLeft: 16,
+                        }}>
+                        {checkCategory.map((category, idx) => (
+                          <TouchableOpacity
+                            onPress={() => selectCategory(category)}
+                            activeOpacity={0.7}
+                            key={idx}
+                            style={[
+                              styles.categoryContainer,
+                              category.checked && {backgroundColor: '#fff'},
+                            ]}>
+                            <Text
+                              style={[
+                                styles.categoryText,
+                                category.checked && {color: '#000'},
+                              ]}>
+                              {category.category}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </ScrollView>
+
+                    <View style={styles.favoritesWrap}>
+                      {filteredCategory.map(dish => (
+                        <AllRecipesCard dish={dish} key={dish.id} />
+                      ))}
+                    </View>
+                  </View>
+                )}
+              </View>
+            </ScrollView>
           )}
         </View>
       </ScrollView>
+      <TouchableOpacity activeOpacity={0.7} style={styles.addBtnContainer}>
+        <Image
+          source={require('../../../assets/images/icons/add.png')}
+          style={{}}
+        />
+      </TouchableOpacity>
     </Layout>
   );
 };
@@ -202,6 +293,44 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 10,
     marginBottom: 140,
+  },
+  categoryText: {
+    fontWeight: '400',
+    fontSize: 14,
+    color: '#fff',
+  },
+  categoryContainer: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  closeText: {
+    fontWeight: '400',
+    fontSize: 24,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 17,
+  },
+  favoritesWrap: {
+    flexDirection: 'row',
+    marginHorizontal: 16,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 10,
+    marginBottom: 150,
+  },
+  addBtnContainer: {
+    width: 64,
+    height: 64,
+    backgroundColor: '#FFC20E',
+    borderRadius: 99,
+    position: 'absolute',
+    right: 20,
+    bottom: 140,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

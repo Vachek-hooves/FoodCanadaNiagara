@@ -8,23 +8,55 @@ import {
   View,
 } from 'react-native';
 import Layout from '../../components/Layout';
-import {dishes} from '../../data/dishes';
 import {useNavigation} from '@react-navigation/native';
-import DishCard from '../../components/DishCard';
 import AllRecipesCard from '../../components/AllRecipesCard';
+import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Category = ({route}) => {
+const Favorites = () => {
   const navigation = useNavigation();
-  const selectedCategory = route.params.category;
+  const [favorites, setFavorites] = useState([]);
 
-  const popularDishes = [...dishes].sort(() => Math.random() - 0.5);
-  console.log('popularDishes', popularDishes);
+  const categories = [
+    {
+      category: 'Breakfast',
+      checked: true,
+    },
+    {
+      category: 'Lunch',
+      checked: false,
+    },
+    {
+      category: 'Dinner',
+      checked: false,
+    },
+    {
+      category: 'Snacks',
+      checked: false,
+    },
+    {
+      category: 'Fast Food',
+      checked: false,
+    },
+    {
+      category: 'Bakery',
+      checked: false,
+    },
+  ];
 
-  const selectedCategoryArray = dishes.filter(
-    dish => dish.category === selectedCategory,
-  );
+  useEffect(() => {
+    const getFavorites = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('favorites');
+        let favoritesList = jsonValue !== null ? JSON.parse(jsonValue) : [];
 
-  console.log('selectedCategoryArray', selectedCategoryArray);
+        setFavorites(favoritesList);
+      } catch (e) {
+        console.error('Failed to add item to favorites:', e);
+      }
+    };
+    getFavorites();
+  }, []);
 
   return (
     <Layout>
@@ -43,7 +75,7 @@ const Category = ({route}) => {
               />
               <Text style={styles.headerText}>Back</Text>
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>{selectedCategory}</Text>
+            <Text style={styles.headerTitle}>Favorites</Text>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Filter')}>
@@ -52,7 +84,6 @@ const Category = ({route}) => {
               />
             </TouchableOpacity>
           </View>
-
           <View style={{marginBottom: 25}}>
             <TextInput
               style={styles.input}
@@ -64,22 +95,34 @@ const Category = ({route}) => {
               style={styles.inputImage}
             />
           </View>
-
-          <Text style={styles.blockTitleText}>Popular recipes</Text>
         </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{paddingLeft: 16}}>
-          {popularDishes.map(dish => (
-            <DishCard dish={dish} key={dish.id} />
-          ))}
+        <ScrollView horizontal>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              gap: 16,
+              marginBottom: 32,
+              paddingLeft: 16,
+            }}>
+            {categories.map((category, idx) => (
+              <View
+                key={idx}
+                style={[
+                  styles.categoryContainer,
+                  category.checked && {backgroundColor: '#fff'},
+                ]}>
+                <Text
+                  style={[
+                    styles.categoryText,
+                    category.checked && {color: '#000'},
+                  ]}>
+                  {category.category}
+                </Text>
+              </View>
+            ))}
+          </View>
         </ScrollView>
-        <View style={{marginHorizontal: 16, marginBottom: 20}}>
-          <Text style={styles.blockTitleText}>All recipes</Text>
-        </View>
-
         <View
           style={{
             flexDirection: 'row',
@@ -89,7 +132,7 @@ const Category = ({route}) => {
             gap: 10,
             marginBottom: 50,
           }}>
-          {selectedCategoryArray.map(dish => (
+          {favorites.map(dish => (
             <AllRecipesCard dish={dish} key={dish.id} />
           ))}
         </View>
@@ -180,6 +223,18 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 140,
   },
+  categoryText: {
+    fontWeight: '400',
+    fontSize: 14,
+    color: '#fff',
+  },
+  categoryContainer: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
 });
 
-export default Category;
+export default Favorites;

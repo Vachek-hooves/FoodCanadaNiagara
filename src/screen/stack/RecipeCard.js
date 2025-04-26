@@ -1,13 +1,12 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import Layout from '../../components/Layout';
 
 import {useNavigation} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
 import MainButton from '../../components/MainButton';
+import Layout from '../../components/Layout';
 
 const RecipeCard = ({route}) => {
   const recipe = route.params;
-  console.log('route', recipe);
   const navigation = useNavigation();
 
   return (
@@ -56,7 +55,7 @@ const RecipeCard = ({route}) => {
 
             <View>
               {recipe.ingredients.map(ingredient => (
-                <View style={styles.ingredientWrap}>
+                <View style={styles.ingredientWrap} key={ingredient}>
                   <Text style={styles.ingredientsText}>{ingredient}</Text>
                 </View>
               ))}
@@ -65,12 +64,12 @@ const RecipeCard = ({route}) => {
           <Text style={styles.blockTitleText}>Receipt</Text>
           <Text style={styles.recipeText}>{recipe.receipt}</Text>
         </View>
-      </ScrollView>
-      <View style={styles.footer}>
-        <View style={{marginHorizontal: 16, alignItems: 'center'}}>
-          <MainButton text={'Save'} />
+        <View style={styles.footer}>
+          <View style={{marginHorizontal: 16, alignItems: 'center'}}>
+            <MainButton text={'Save'} />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </Layout>
   );
 };
@@ -138,9 +137,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 120,
     backgroundColor: '#1C5839',
-    position: 'absolute',
     bottom: 0,
     paddingTop: 12,
+    position: 'absolute',
   },
 });
 
