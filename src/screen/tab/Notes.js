@@ -115,24 +115,23 @@ const Notes = () => {
 
         <Calendar
           // Customize the appearance of the calendar
+
           style={{
             height: 350,
             backgroundColor: 'transparent',
-            color: 'red',
           }}
           theme={{
-            backgroundColor: 'transparent',
             calendarBackground: 'transparent',
-            textSectionTitleColor: '#b6c1cd',
-            selectedDayBackgroundColor: '#00adf5',
+            textSectionTitleColor: '#ffffff',
+            selectedDayBackgroundColor: 'red',
             selectedDayTextColor: '#ffffff',
-            todayTextColor: '#00adf5',
-            dayTextColor: '#2d4150',
+            todayTextColor: '#ffffff',
+            todayBackgroundColor: '#1C5839',
             textDisabledColor: '#dd99ee',
             textSectionTitleDisabledColor: 'blue',
+            indicatorColor: 'blue',
+            dayTextColor: '#fff',
           }}
-          // Specify the current date
-          // current={'2012-03-01'}
           // Callback that gets called when the user selects a day
           onDayPress={day => {
             console.log('selected day', day);

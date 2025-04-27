@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Layout from '../../components/Layout';
 import MainButton from '../../components/MainButton';
 import {useNavigation} from '@react-navigation/native';
@@ -8,10 +15,11 @@ import {dishes} from '../../data/dishes';
 import {categories} from '../../data/categories';
 import {useStore} from '../../store/context';
 
-const Filter = () => {
+const ContactWithUs = () => {
   const navigation = useNavigation();
   const [category, setCategory] = useState(null);
   const [checkCategory, setCheckCategory] = useState(categories);
+  const [onChangeValue, setOnChangeValue] = useState('');
   const [colorsChecked, setColorsChecked] = useState({
     Easy: false,
     Medium: false,
@@ -53,7 +61,6 @@ const Filter = () => {
           activeOpacity={0.7}
           style={{
             flexDirection: 'row',
-            marginRight: '28%',
             alignItems: 'center',
           }}>
           <Image
@@ -61,57 +68,50 @@ const Filter = () => {
           />
           <Text style={styles.headerText}>Back</Text>
         </TouchableOpacity>
-        <Text style={[styles.headerText, {fontWeight: '600'}]}>Filters</Text>
-      </View>
-
-      <View style={styles.categoriesWrap}>
-        {checkCategory.map((category, idx) => (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => selectCategory(category)}
-            key={idx}
-            style={[
-              styles.categoryContainer,
-              category.checked && {backgroundColor: '#fff'},
-            ]}>
-            <Text
-              style={[
-                styles.categoryText,
-                category.checked && {color: '#000'},
-              ]}>
-              {category.category}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <View style={{marginHorizontal: 16}}>
-        <Text style={styles.blockTitleText}>Recipe difficulty</Text>
       </View>
 
       <View style={{marginHorizontal: 16}}>
-        {Object.entries(colorsChecked).map(([color, value]) => {
-          return (
-            <CheckBox
-              label={color}
-              key={color}
-              isChecked={value}
-              onChange={() => {
-                setColorsChecked({
-                  ...colorsChecked,
-                  [color]: !colorsChecked[color],
-                });
-              }}
-            />
-          );
-        })}
+        <Text style={styles.blockTitleText}>Contact with us</Text>
+      </View>
+
+      <View style={{marginHorizontal: 16}}>
+        <Text style={styles.secondaryText}>First name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Your name"
+          value={onChangeValue}
+          placeholderTextColor="rgba(60, 60, 67, 0.6)"
+          onChangeText={setOnChangeValue}
+        />
+        <Text style={styles.secondaryText}>Mobile number</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Your name"
+          value={onChangeValue}
+          placeholderTextColor="rgba(60, 60, 67, 0.6)"
+          onChangeText={setOnChangeValue}
+        />
+        <Text style={styles.secondaryText}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Your name"
+          value={onChangeValue}
+          placeholderTextColor="rgba(60, 60, 67, 0.6)"
+          onChangeText={setOnChangeValue}
+        />
+        <Text style={styles.secondaryText}>Description</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Your name"
+          value={onChangeValue}
+          placeholderTextColor="rgba(60, 60, 67, 0.6)"
+          onChangeText={setOnChangeValue}
+        />
       </View>
 
       <View style={styles.footer}>
         <View style={{marginHorizontal: 16, alignItems: 'center'}}>
-          <MainButton text={'Save'} pressed={saveFilters()} />
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.resetBtnText}>Reset</Text>
-          </TouchableOpacity>
+          <MainButton text={'Send'} pressed={saveFilters()} />
         </View>
       </View>
     </Layout>
@@ -125,6 +125,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 25,
   },
+  input: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    paddingLeft: 20,
+    height: 52,
+    fontSize: 17,
+    fontWeight: '400',
+    color: '#000',
+    width: '100%',
+    marginBottom: 24,
+  },
   headerText: {
     fontWeight: '400',
     fontSize: 17,
@@ -132,44 +143,25 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   blockTitleText: {
-    fontSize: 18,
+    fontSize: 34,
     fontWeight: '800',
     color: '#fff',
     marginBottom: 20,
   },
-  categoryText: {
-    fontWeight: '400',
-    fontSize: 14,
+  secondaryText: {
+    fontSize: 20,
+    fontWeight: '700',
     color: '#fff',
-  },
-  categoryContainer: {
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#fff',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    marginBottom: 12,
   },
   footer: {
     width: '100%',
-    height: 168,
+    height: 120,
     backgroundColor: '#1C5839',
     position: 'absolute',
     bottom: 0,
     paddingTop: 12,
   },
-  resetBtnText: {
-    fontSize: 20,
-    fontWeight: '400',
-    color: '#fff',
-    marginTop: 20,
-  },
-  categoriesWrap: {
-    marginHorizontal: 16,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    marginBottom: 32,
-  },
 });
 
-export default Filter;
+export default ContactWithUs;

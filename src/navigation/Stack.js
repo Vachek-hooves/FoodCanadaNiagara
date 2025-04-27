@@ -4,6 +4,7 @@ import Filter from '../screen/stack/Filter';
 import Category from '../screen/stack/Category';
 import RecipeCard from '../screen/stack/RecipeCard';
 import Favorites from '../screen/stack/Favorites';
+import ContactWithUs from '../screen/stack/ContactWithUs';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ const StackNav = () => {
       <Stack.Screen name="Category" component={Category} />
       <Stack.Screen name="RecipeCard" component={RecipeCard} />
       <Stack.Screen name="Favorites" component={Favorites} />
+      <Stack.Screen name="ContactWithUs" component={ContactWithUs} />
     </Stack.Navigator>
   );
 };

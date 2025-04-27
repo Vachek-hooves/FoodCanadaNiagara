@@ -1,8 +1,9 @@
 import {Text, TouchableOpacity, View} from 'react-native';
 
-const MainButton = ({text}) => {
+const MainButton = ({text, pressed}) => {
   return (
     <TouchableOpacity
+      onPress={() => pressed}
       activeOpacity={0.7}
       style={{
         width: '100%',

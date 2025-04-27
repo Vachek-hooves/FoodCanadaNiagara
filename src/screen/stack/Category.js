@@ -12,15 +12,17 @@ import {dishes} from '../../data/dishes';
 import {useNavigation} from '@react-navigation/native';
 import DishCard from '../../components/DishCard';
 import AllRecipesCard from '../../components/AllRecipesCard';
+import {useStore} from '../../store/context';
 
 const Category = ({route}) => {
   const navigation = useNavigation();
   const selectedCategory = route.params.category;
+  const {commonFilter} = useStore();
 
   const popularDishes = [...dishes].sort(() => Math.random() - 0.5);
   console.log('popularDishes', popularDishes);
 
-  const selectedCategoryArray = dishes.filter(
+  const selectedCategoryArray = commonFilter.filter(
     dish => dish.category === selectedCategory,
   );
 
