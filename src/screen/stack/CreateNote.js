@@ -96,6 +96,7 @@ const CreateNote = () => {
 
   const saveData = async () => {
     const newData = {
+      id: Date.now(),
       description,
       tasks,
       heading,

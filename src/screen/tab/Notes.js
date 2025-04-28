@@ -23,7 +23,6 @@ const Notes = () => {
   const navigation = useNavigation();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showFavorites, setShowFavorites] = useState(false);
-  const {favorites, setFavorites} = useStore();
   const [category, setCategory] = useState(null);
   const [selectCategoryId, setSelectCategoryId] = useState(null);
   const [selectedIdx, setSelectedIdx] = useState(0);
@@ -57,7 +56,9 @@ const Notes = () => {
   ]);
   const isFocused = useIsFocused();
 
-  console.log('formData', formData);
+  useEffect(() => {
+    getData();
+  }, [isFocused]);
 
   const selectCategory = selectedCategory => {
     const filteredByCategory = formData.filter(
@@ -83,13 +84,23 @@ const Notes = () => {
     setCheckCategory(checked);
   };
 
-  useEffect(() => {
-    getData();
-  }, [isFocused]);
+  const getData = async () => {
+    try {
+      const savedData = await AsyncStorage.getItem('notes');
+      const parsed = JSON.parse(savedData);
+      setFormData(parsed);
+      setFilteredData(parsed);
 
-  // useEffect(() => {
-  //   getData();
-  // }, []);
+      // if (parsed != null) {
+      //   setSaveProfile(true);
+      // }
+      // setName(parsed.onChangeValue);
+      // setUserImage(parsed.userImage);
+      // setChangePhoto(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const generateDays = () => {
     return Array.from({length: 7}, (_, i) => addDays(new Date(), i));
@@ -114,24 +125,6 @@ const Notes = () => {
         </Text>
       </TouchableOpacity>
     );
-  };
-
-  const getData = async () => {
-    try {
-      const savedData = await AsyncStorage.getItem('notes');
-      const parsed = JSON.parse(savedData);
-      setFormData(parsed);
-      console.log('parced', parsed);
-
-      // if (parsed != null) {
-      //   setSaveProfile(true);
-      // }
-      // setName(parsed.onChangeValue);
-      // setUserImage(parsed.userImage);
-      // setChangePhoto(true);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (

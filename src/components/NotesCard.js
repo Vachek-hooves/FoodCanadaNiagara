@@ -61,9 +61,9 @@ const NotesCard = ({note}) => {
   };
 
   return (
-    <View
-      onPress={() => navigation.navigate('RecipeCard', dish)}
+    <TouchableOpacity
       activeOpacity={0.7}
+      onPress={() => navigation.navigate('NotesDetailsCard', note)}
       style={styles.recipesCard}
       key={note}>
       <Image
@@ -134,7 +134,7 @@ const NotesCard = ({note}) => {
           {note.description}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

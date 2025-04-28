@@ -6,6 +6,7 @@ import RecipeCard from '../screen/stack/RecipeCard';
 import Favorites from '../screen/stack/Favorites';
 import ContactWithUs from '../screen/stack/ContactWithUs';
 import CreateNote from '../screen/stack/CreateNote';
+import NotesDetailsCard from '../screen/stack/NotesDetailsCard';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,7 @@ const StackNav = () => {
       <Stack.Screen name="Favorites" component={Favorites} />
       <Stack.Screen name="ContactWithUs" component={ContactWithUs} />
       <Stack.Screen name="CreateNote" component={CreateNote} />
+      <Stack.Screen name="NotesDetailsCard" component={NotesDetailsCard} />
       {/* <Stack.Screen name="Notes" component={Notes} /> */}
     </Stack.Navigator>
   );
