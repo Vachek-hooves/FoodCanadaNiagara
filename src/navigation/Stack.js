@@ -5,6 +5,7 @@ import Category from '../screen/stack/Category';
 import RecipeCard from '../screen/stack/RecipeCard';
 import Favorites from '../screen/stack/Favorites';
 import ContactWithUs from '../screen/stack/ContactWithUs';
+import CreateNote from '../screen/stack/CreateNote';
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,8 @@ const StackNav = () => {
       <Stack.Screen name="RecipeCard" component={RecipeCard} />
       <Stack.Screen name="Favorites" component={Favorites} />
       <Stack.Screen name="ContactWithUs" component={ContactWithUs} />
+      <Stack.Screen name="CreateNote" component={CreateNote} />
+      {/* <Stack.Screen name="Notes" component={Notes} /> */}
     </Stack.Navigator>
   );
 };

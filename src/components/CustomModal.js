@@ -21,8 +21,7 @@ const CustomModal = ({visible, children}) => {
             borderTopRightRadius: 32,
             paddingTop: 25,
             paddingBottom: 70,
-
-            paddingHorizontal: 20,
+            // paddingHorizontal: 20,
             position: 'absolute',
             bottom: 0,
           }}>

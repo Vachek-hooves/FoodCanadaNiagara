@@ -7,50 +7,18 @@ import {
   View,
 } from 'react-native';
 import Layout from '../../components/Layout';
-import MainButton from '../../components/MainButton';
 import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
-import CheckBox from '../../components/CheckBox';
-import {dishes} from '../../data/dishes';
-import {categories} from '../../data/categories';
-import {useStore} from '../../store/context';
 
 const ContactWithUs = () => {
   const navigation = useNavigation();
-  const [category, setCategory] = useState(null);
-  const [checkCategory, setCheckCategory] = useState(categories);
-  const [onChangeValue, setOnChangeValue] = useState('');
-  const [colorsChecked, setColorsChecked] = useState({
-    Easy: false,
-    Medium: false,
-    Hard: false,
-  });
-  const {setCommonFilter} = useStore();
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [description, setDescription] = useState('');
 
-  const saveFilters = () => {
-    const filtered = dishes.filter(dish => dish.category === category);
-    // setCommonFilter(filtered);
-  };
-
-  const selectCategory = selectedCategory => {
-    // const filteredByCategory = favorites.filter(
-    //   favorite => favorite.category === selectedCategory.category,
-    // );
-    setCategory(selectedCategory.category);
-    const checked = categories.map(cat => {
-      if (cat.id === selectedCategory.id) {
-        return {
-          ...cat,
-          checked: true,
-        };
-      }
-      return {
-        ...cat,
-        checked: false,
-      };
-    });
-    setCheckCategory(checked);
-    // setFilteredCategory(filteredByCategory);
+  const sendForm = () => {
+    setName(''), setNumber(''), setEmail(''), setDescription('');
   };
 
   return (
@@ -79,39 +47,54 @@ const ContactWithUs = () => {
         <TextInput
           style={styles.input}
           placeholder="Your name"
-          value={onChangeValue}
+          value={name}
           placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setOnChangeValue}
+          onChangeText={setName}
         />
         <Text style={styles.secondaryText}>Mobile number</Text>
         <TextInput
           style={styles.input}
-          placeholder="Your name"
-          value={onChangeValue}
+          placeholder="+7 (XXX) XXX XX XX"
+          value={number}
           placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setOnChangeValue}
+          onChangeText={setNumber}
         />
         <Text style={styles.secondaryText}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="Your name"
-          value={onChangeValue}
+          placeholder="ivanivanov@gmail.com"
+          value={email}
           placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setOnChangeValue}
+          onChangeText={setEmail}
         />
         <Text style={styles.secondaryText}>Description</Text>
         <TextInput
-          style={styles.input}
-          placeholder="Your name"
-          value={onChangeValue}
+          textAlignVertical="top"
+          style={[styles.input, {height: 88}]}
+          placeholder="Description"
+          value={description}
           placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setOnChangeValue}
+          onChangeText={setDescription}
         />
       </View>
 
       <View style={styles.footer}>
         <View style={{marginHorizontal: 16, alignItems: 'center'}}>
-          <MainButton text={'Send'} pressed={saveFilters()} />
+          <TouchableOpacity
+            onPress={() => sendForm()}
+            activeOpacity={0.7}
+            style={{
+              width: '100%',
+              height: 56,
+              borderRadius: 20,
+              backgroundColor: '#FFC20E',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
+              Send
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Layout>

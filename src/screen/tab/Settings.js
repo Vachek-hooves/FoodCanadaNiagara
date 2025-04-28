@@ -15,39 +15,41 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomModal from '../../components/CustomModal';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Settings = () => {
   const [onChangeValue, setOnChangeValue] = useState('');
-  const [image, setImage] = useState('');
+  const [userImage, setUserImage] = useState('');
   const [name, setName] = useState('');
 
   const [changePhoto, setChangePhoto] = useState(false);
   const [saveProfile, setSaveProfile] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
-  const [changeName, setChangeName] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const navigation = useNavigation();
 
-  console.log('img', image);
+  useEffect(() => {
+    getData();
+  }, [saveProfile, isVisible]);
+
+  console.log('userimg', userImage);
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   let options = {
     storageOptions: {
       path: 'image',
-      maxHeight: 600,
-      maxWidth: 600,
+      // maxHeight: 600,
+      // maxWidth: 600,
     },
   };
 
   const imagePicker = () => {
     launchImageLibrary(options, response => {
       if (response.didCancel) return;
-      setImage(response.assets[0].uri);
+      setUserImage(response.assets[0].uri);
 
       setChangePhoto(true);
-      console.log('res', response);
     });
   };
 
@@ -56,7 +58,7 @@ const Settings = () => {
 
     const newData = {
       onChangeValue,
-      image,
+      userImage,
     };
 
     try {
@@ -68,30 +70,26 @@ const Settings = () => {
     }
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const savedData = await AsyncStorage.getItem('profileData');
-        const parsed = JSON.parse(savedData);
-
-        setName(parsed.onChangeValue);
-        setImage(parsed.image);
-        setChangePhoto(true);
-        if (parsed != null) {
-          saveProfile(true);
-        }
-      } catch (error) {
-        console.log(error);
+  const getData = async () => {
+    try {
+      const savedData = await AsyncStorage.getItem('profileData');
+      const parsed = JSON.parse(savedData);
+      if (parsed != null) {
+        setSaveProfile(true);
       }
-    };
-    getData();
-  }, [saveProfile, isVisible]);
+      setName(parsed.onChangeValue);
+      setUserImage(parsed.userImage);
+      setChangePhoto(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleChangeName = async () => {
     setIsVisible(false);
     const newData = {
       onChangeValue,
-      image,
+      userImage,
     };
     try {
       await AsyncStorage.setItem('profileData', JSON.stringify(newData));
@@ -101,8 +99,9 @@ const Settings = () => {
     }
   };
 
+  const isDisabled = userImage === '' || onChangeValue === '';
+
   const handleDeleteAccount = () => {
-    // AsyncStorage.clear();
     Alert.alert(
       'Delete account',
       'Are you sure you want to delete your account? This action is irreversible.',
@@ -115,7 +114,9 @@ const Settings = () => {
         {
           text: 'Delete',
           onPress: () => {
-            return setSaveProfile(false);
+            setSaveProfile(false);
+            setUserImage('');
+            setChangePhoto(false);
             AsyncStorage.clear();
           },
         },
@@ -138,7 +139,7 @@ const Settings = () => {
                 <View>
                   <View style={{flexDirection: 'row'}}>
                     <Image
-                      source={{uri: image}}
+                      source={{uri: userImage}}
                       style={{width: 88, height: 88, borderRadius: 100}}
                     />
                     <TouchableOpacity
@@ -162,7 +163,7 @@ const Settings = () => {
               <View>
                 <Text style={styles.mainTitle}>Settings</Text>
 
-                {changePhoto ? (
+                {!changePhoto && (
                   <View>
                     <Image
                       source={require('../../../assets/images/icons/person.png')}
@@ -176,9 +177,11 @@ const Settings = () => {
                       />
                     </TouchableOpacity>
                   </View>
-                ) : (
+                )}
+
+                {changePhoto && (
                   <Image
-                    source={{uri: image}}
+                    source={{uri: userImage}}
                     style={{width: 88, height: 88, borderRadius: 100}}
                   />
                 )}
@@ -192,6 +195,7 @@ const Settings = () => {
                 onChangeText={setOnChangeValue}
               />
               <TouchableOpacity
+                disabled={isDisabled}
                 onPress={() => saveData()}
                 activeOpacity={0.7}
                 style={{
@@ -326,50 +330,6 @@ const Settings = () => {
             )}
           </View>
         </ScrollView>
-
-        {/* 
-        {changeName && (
-          <View
-            style={{
-              width: '100%',
-              paddingBottom: 25,
-              backgroundColor: '#1C5839',
-              borderTopLeftRadius: 32,
-              borderTopRightRadius: 32,
-              borderBottomWidth: 1,
-              borderBottomColor: '#fff',
-              paddingTop: 60,
-              alignItems: 'center',
-              paddingHorizontal: 20,
-              position: 'absolute',
-              bottom: 110,
-            }}>
-            <View></View>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Your name"
-              value={onChangeValue}
-              placeholderTextColor="rgba(60, 60, 67, 0.6)"
-              onChangeText={setOnChangeValue}
-            />
-            <TouchableOpacity
-              onPress={() => saveData()}
-              activeOpacity={0.7}
-              style={{
-                width: '100%',
-                height: 56,
-                borderRadius: 20,
-                backgroundColor: '#FFC20E',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
-                Save
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )} */}
       </View>
       {isVisible && (
         <CustomModal visible={true}>
