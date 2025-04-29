@@ -2,23 +2,24 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Calendar} from 'react-native-calendars';
 
 import Layout from '../../components/Layout';
 import {useNavigation} from '@react-navigation/native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
 import CustomModal from '../../components/CustomModal';
-import DatePicker from 'react-native-date-picker';
+import StarRating from 'react-native-star-rating-widget';
+import {AirbnbRating, Rating} from 'react-native-ratings';
+import {TimerPicker} from 'react-native-timer-picker';
+import LinearGradient from 'react-native-linear-gradient';
 
-const CreateNote = () => {
+const CreateRecipe = () => {
   const navigation = useNavigation();
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
@@ -29,40 +30,91 @@ const CreateNote = () => {
   const [selectCategoryId, setSelectCategoryId] = useState(1);
   const [showTaskInput, setShowTaskInput] = useState(false);
   const [category, setCategory] = useState(null);
+
   const [isVisible, setIsVisible] = useState(false);
-  const [showTimeModal, setShowTimeModal] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+  const [rating, setRating] = useState(0);
   const [checkCategory, setCheckCategory] = useState([
     {
       id: 1,
-      title: 'Personal',
-      color: 'blue',
+      title: 'Breakfast',
       checked: true,
     },
     {
       id: 2,
-      title: 'Work',
-      color: 'blue',
+      title: 'Lunch',
       checked: false,
     },
     {
       id: 3,
-      title: 'Study',
-      color: 'blue',
+      title: 'Dinner',
       checked: false,
     },
     {
       id: 4,
-      title: 'Sport',
-      color: 'blue',
+      title: 'Snacks',
+      checked: false,
+    },
+    {
+      id: 5,
+      title: 'Fast food',
+      checked: false,
+    },
+    {
+      id: 6,
+      title: 'Bakery',
       checked: false,
     },
   ]);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [showTime, setShowTime] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(null);
 
-  console.log('date', selectedTime);
+  const formatTime = ({minutes}) => {
+    const timeParts = [];
 
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    if (minutes !== undefined) {
+      timeParts.push(minutes.toString().padStart(2, '0'));
+    }
+
+    setSelectedTime(timeParts);
+  };
+
+  const selectDifficulty = [
+    {
+      id: 1,
+      difficulty: 'Easy',
+      checked: true,
+      image: require('../../../assets/images/icons/rating.png'),
+    },
+    {
+      id: 2,
+      difficulty: 'Easy',
+      checked: true,
+      image: require('../../../assets/images/icons/rating.png'),
+    },
+    {
+      id: 3,
+      difficulty: 'Medium',
+      checked: true,
+      image: require('../../../assets/images/icons/rating.png'),
+    },
+    {
+      id: 4,
+      difficulty: 'Medium',
+      checked: true,
+      image: require('../../../assets/images/icons/rating.png'),
+    },
+    {
+      id: 5,
+      difficulty: 'Hard',
+      checked: true,
+      image: require('../../../assets/images/icons/rating.png'),
+    },
+  ];
+
+  const handleRating = star => {
+    setRating(star);
+  };
 
   let options = {
     storageOptions: {
@@ -105,16 +157,17 @@ const CreateNote = () => {
       description,
       tasks,
       heading,
+      rating,
       image,
       selectCategoryId,
-      selectedDate,
+      //   selectedDate,
     };
     try {
-      const jsonValue = await AsyncStorage.getItem('notes');
-      let notes = jsonValue !== null ? JSON.parse(jsonValue) : [];
-      console.log('notes', notes);
-      notes.push(newData);
-      await AsyncStorage.setItem('notes', JSON.stringify(notes));
+      const jsonValue = await AsyncStorage.getItem('myRecipe');
+      let recipe = jsonValue !== null ? JSON.parse(jsonValue) : [];
+      console.log('recipe', recipe);
+      recipe.push(newData);
+      await AsyncStorage.setItem('myRecipe', JSON.stringify(recipe));
       navigation.goBack('');
     } catch (e) {
       console.error('Failed to add item to favorites:', e);
@@ -139,7 +192,7 @@ const CreateNote = () => {
       </View>
       <ScrollView>
         <View style={{marginHorizontal: 16}}>
-          <Text style={styles.blockTitleText}>Note</Text>
+          <Text style={styles.blockTitleText}>Receipt</Text>
         </View>
 
         <View style={{marginHorizontal: 16}}>
@@ -175,7 +228,7 @@ const CreateNote = () => {
               />
             </TouchableOpacity>
           </View>
-          <Text style={styles.secondaryText}>Tasks</Text>
+          <Text style={styles.secondaryText}>Ingredients</Text>
           {showTaskInput ? (
             <View>
               <TextInput
@@ -204,7 +257,7 @@ const CreateNote = () => {
                 source={require('../../../assets/images/icons/add.png')}
                 style={{width: 16, height: 16}}
               />
-              <Text style={styles.smallText}>Add task</Text>
+              <Text style={styles.smallText}>Add ingredient</Text>
             </TouchableOpacity>
           )}
           <Text style={styles.secondaryText}>Category and color</Text>
@@ -216,9 +269,6 @@ const CreateNote = () => {
                 key={idx}
                 style={[
                   styles.categoryContainer,
-
-                  category.id === 2 && {borderColor: '#FFC20E'},
-                  category.id === 3 && {borderColor: '#FF999D'},
                   category.checked && {
                     backgroundColor: '#fff',
                     borderColor: '#fff',
@@ -253,9 +303,30 @@ const CreateNote = () => {
             </View>
           )}
 
-          <Text style={styles.secondaryText}>Deadlines</Text>
+          <Text style={styles.secondaryText}>Difficulty</Text>
+
+          <View style={styles.containers}>
+            <View style={styles.starsContainer}>
+              {[1, 2, 3, 4, 5].map(star => (
+                <TouchableOpacity key={star} onPress={() => handleRating(star)}>
+                  {star <= rating ? (
+                    <Image
+                      source={require('../../../assets/images/icons/rating.png')}
+                      tintColor={'#FFC20E'}
+                    />
+                  ) : (
+                    <Image
+                      source={require('../../../assets/images/icons/rating.png')}
+                    />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <Text style={styles.secondaryText}>Duration</Text>
           <TouchableOpacity
-            onPress={() => setShowTimeModal(true)}
+            onPress={() => setIsVisible(true)}
             style={styles.deadlinesContainer}>
             <View
               style={{
@@ -266,7 +337,10 @@ const CreateNote = () => {
                 source={require('../../../assets/images/icons/notesTime.png')}
                 style={{position: 'absolute', left: -50}}
               />
-              <Text style={styles.deadlinesText}>Time</Text>
+              <Text style={styles.deadlinesText}>
+                {showTime && selectedTime} {showTime && 'min'}
+                {!showTime && 'Time'}
+              </Text>
             </View>
 
             <Image
@@ -274,25 +348,7 @@ const CreateNote = () => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => setIsVisible(true)}
-            style={[styles.deadlinesContainer, {marginBottom: 25}]}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                source={require('../../../assets/images/icons/notesCalendar.png')}
-                style={{position: 'absolute', left: -50}}
-              />
-              <Text style={styles.deadlinesText}>Date</Text>
-            </View>
-
-            <Image
-              source={require('../../../assets/images/icons/nextArrow.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.notifyContainer}>
-            <Text style={styles.secondaryText}>Notifications</Text>
-            <Switch onValueChange={toggleSwitch} value={isEnabled} />
-          </View>
+          <View style={styles.notifyContainer}></View>
         </View>
       </ScrollView>
       <View style={styles.footer}>
@@ -308,64 +364,6 @@ const CreateNote = () => {
         </View>
       </View>
 
-      {showTimeModal && (
-        <CustomModal visible={true}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: 24,
-              marginHorizontal: 20,
-            }}>
-            <Text style={{fontSize: 20, fontWeight: '700', color: '#fff'}}>
-              Date
-            </Text>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => setShowTimeModal(false)}>
-              <Image
-                source={require('../../../assets/images/icons/closeModal.png')}
-              />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              borderBottomColor: '#fff',
-              borderBottomWidth: 1,
-              marginBottom: 25,
-            }}></View>
-
-          <View style={{alignItems: 'center', marginHorizontal: 20}}>
-            <DatePicker
-              date={selectedTime}
-              onDateChange={setSelectedTime}
-              mode="time"
-            />
-            <TouchableOpacity
-              onPress={() => setShowTimeModal(false)}
-              activeOpacity={0.7}
-              style={{
-                width: '100%',
-                height: 56,
-                borderRadius: 20,
-                backgroundColor: '#FFC20E',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 26,
-              }}>
-              <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
-                Done
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => setIsVisible(false)}>
-              <Text style={styles.resetBtnText}>Reset</Text>
-            </TouchableOpacity>
-          </View>
-        </CustomModal>
-      )}
-
       {isVisible && (
         <CustomModal visible={true}>
           <View
@@ -376,7 +374,7 @@ const CreateNote = () => {
               marginHorizontal: 20,
             }}>
             <Text style={{fontSize: 20, fontWeight: '700', color: '#fff'}}>
-              Date
+              Duration
             </Text>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -393,54 +391,49 @@ const CreateNote = () => {
               marginBottom: 25,
             }}></View>
 
-          <Calendar
-            monthFormat="MMMM yyyy"
-            showSixWeeks={true}
-            hideArrows={true}
-            hideExtraDays={true}
-            style={
-              {
-                // backgroundColor: 'transparent',
-              }
-            }
-            theme={{
-              calendarBackground: 'transparent',
-              textSectionTitleColor: '#ffffff',
-              selectedDayTextColor: '#ffffff',
-              todayTextColor: '#FFC20E',
-              textDisabledColor: '#dd99ee',
-              arrowColor: '#fff',
-              indicatorColor: '#fff',
-              dayTextColor: '#fff',
-              monthTextColor: '#ffffff',
-              textMonthFontSize: 16,
-              textMonthFontWeight: '700',
-              textDayFontSize: 13,
-              textDayFontWeight: '600',
-              selectedDayBackgroundColor: '#FFC20E',
-              selectedDayTextColor: 'rgba(255, 195, 14, 0.26)',
-            }}
-            // Callback that gets called when the user selects a day
-            onDayPress={day => {
-              setSelectedDate(day.dateString);
-            }}
-            // Mark specific dates as marked
-            markedDates={{
-              '2025-04-29': {
-                marked: true,
-                selectedColor: 'blue',
-              },
-              '2012-03-02': {marked: true},
-              '2012-03-03': {
-                marked: true,
-                selectedColor: 'blue',
-              },
-            }}
-          />
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#1C5839',
+            }}>
+            <TimerPicker
+              onDurationChange={pickedDuration => formatTime(pickedDuration)}
+              padWithNItems={2}
+              hourLabel="hours"
+              minuteLabel="min"
+              secondLabel="sec"
+              backgroundColor="#1C5839"
+              styles={{
+                pickerItem: {
+                  fontSize: 23,
+                  fontWeight: '400',
+                  backgroundColor: '#1C5839',
+                  color: '#fff',
+                },
+                pickerLabel: {
+                  fontSize: 17,
+                  right: -20,
+                  backgroundColor: '#1C5839',
+                  color: '#fff',
+                },
+                pickerLabelContainer: {
+                  width: 60,
+                  backgroundColor: '#1C5839',
+                },
+                pickerItemContainer: {
+                  width: 150,
+                  backgroundColor: '#1C5839',
+                },
+              }}
+            />
+          </View>
 
           <View style={{alignItems: 'center', marginHorizontal: 20}}>
             <TouchableOpacity
-              onPress={() => setIsVisible(false)}
+              onPress={() => {
+                setIsVisible(false), setShowTime(true);
+              }}
               activeOpacity={0.7}
               style={{
                 width: '100%',
@@ -452,13 +445,8 @@ const CreateNote = () => {
                 marginTop: 26,
               }}>
               <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
-                Done
+                Save
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => setIsVisible(false)}>
-              <Text style={styles.resetBtnText}>Reset</Text>
             </TouchableOpacity>
           </View>
         </CustomModal>
@@ -473,6 +461,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 16,
     marginBottom: 25,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 10,
+    gap: 36,
+  },
+  star: {
+    marginHorizontal: 5,
+  },
+  feedback: {
+    fontSize: 18,
+    color: '#333',
+    marginTop: 20,
   },
   input: {
     backgroundColor: '#fff',
@@ -490,8 +499,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 15,
     paddingVertical: 10,
-    borderBottomColor: '#fff',
-    borderBottomWidth: 1,
     marginLeft: 50,
   },
   notifyContainer: {
@@ -584,4 +591,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateNote;
+export default CreateRecipe;

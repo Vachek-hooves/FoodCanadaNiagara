@@ -88,15 +88,11 @@ const Notes = () => {
     try {
       const savedData = await AsyncStorage.getItem('notes');
       const parsed = JSON.parse(savedData);
-      setFormData(parsed);
-      setFilteredData(parsed);
 
-      // if (parsed != null) {
-      //   setSaveProfile(true);
-      // }
-      // setName(parsed.onChangeValue);
-      // setUserImage(parsed.userImage);
-      // setChangePhoto(true);
+      if (parsed != null) {
+        setFormData(parsed);
+        setFilteredData(parsed);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -148,7 +144,7 @@ const Notes = () => {
               )}
             </TouchableOpacity>
 
-            <Text style={styles.headerTitle}>Food Canada Niagara</Text>
+            <Text style={styles.headerTitle}>Notes</Text>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Filter')}>

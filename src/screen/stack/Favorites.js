@@ -12,37 +12,39 @@ import {useNavigation} from '@react-navigation/native';
 import AllRecipesCard from '../../components/AllRecipesCard';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {categories} from '../../data/categories';
 
 const Favorites = () => {
   const navigation = useNavigation();
   const [favorites, setFavorites] = useState([]);
-
-  const categories = [
-    {
-      category: 'Breakfast',
-      checked: true,
-    },
-    {
-      category: 'Lunch',
-      checked: false,
-    },
-    {
-      category: 'Dinner',
-      checked: false,
-    },
-    {
-      category: 'Snacks',
-      checked: false,
-    },
-    {
-      category: 'Fast Food',
-      checked: false,
-    },
-    {
-      category: 'Bakery',
-      checked: false,
-    },
-  ];
+  const [filteredCategory, setFilteredCategory] = useState([]);
+  const [checkCategory, setCheckCategory] = useState(categories);
+  // const categories = [
+  //   {
+  //     category: 'Breakfast',
+  //     checked: true,
+  //   },
+  //   {
+  //     category: 'Lunch',
+  //     checked: false,
+  //   },
+  //   {
+  //     category: 'Dinner',
+  //     checked: false,
+  //   },
+  //   {
+  //     category: 'Snacks',
+  //     checked: false,
+  //   },
+  //   {
+  //     category: 'Fast Food',
+  //     checked: false,
+  //   },
+  //   {
+  //     category: 'Bakery',
+  //     checked: false,
+  //   },
+  // ];
 
   useEffect(() => {
     const getFavorites = async () => {
@@ -51,12 +53,34 @@ const Favorites = () => {
         let favoritesList = jsonValue !== null ? JSON.parse(jsonValue) : [];
 
         setFavorites(favoritesList);
+        setFilteredCategory(favoritesList);
       } catch (e) {
         console.error('Failed to add item to favorites:', e);
       }
     };
     getFavorites();
   }, []);
+
+  const selectCategory = selectedCategory => {
+    const filteredByCategory = favorites.filter(
+      favorite => favorite.category === selectedCategory.category,
+    );
+
+    const checked = categories.map(cat => {
+      if (cat.id === selectedCategory.id) {
+        return {
+          ...cat,
+          checked: true,
+        };
+      }
+      return {
+        ...cat,
+        checked: false,
+      };
+    });
+    setCheckCategory(checked);
+    setFilteredCategory(filteredByCategory);
+  };
 
   return (
     <Layout>
@@ -105,8 +129,9 @@ const Favorites = () => {
               marginBottom: 32,
               paddingLeft: 16,
             }}>
-            {categories.map((category, idx) => (
-              <View
+            {checkCategory.map((category, idx) => (
+              <TouchableOpacity
+                onPress={() => selectCategory(category)}
                 key={idx}
                 style={[
                   styles.categoryContainer,
@@ -119,7 +144,7 @@ const Favorites = () => {
                   ]}>
                   {category.category}
                 </Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </ScrollView>

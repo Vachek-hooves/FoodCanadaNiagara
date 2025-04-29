@@ -32,22 +32,23 @@ const Home = () => {
     dish.title.toLowerCase().includes(onChangeValue.toLowerCase()),
   );
 
-  const popularDishes = [...dishes].sort(() => Math.random() - 0.5);
+  const popularDishes = [...dishes].slice(0, 6);
 
-  useEffect(() => {
-    const getFavorites = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('favorites');
-        let favoritesList = jsonValue !== null ? JSON.parse(jsonValue) : [];
+  // useEffect(() => {
+  //   getFavorites();
+  // }, []);
 
-        setFavorites(favoritesList);
-        setFilteredCategory(favoritesList);
-      } catch (e) {
-        console.error('Failed to add item to favorites:', e);
-      }
-    };
-    getFavorites();
-  }, []);
+  const getFavorites = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('favorites');
+      let favoritesList = jsonValue !== null ? JSON.parse(jsonValue) : [];
+
+      setFavorites(favoritesList);
+      setFilteredCategory(favoritesList);
+    } catch (e) {
+      console.error('Failed to add item to favorites:', e);
+    }
+  };
 
   const selectCategory = selectedCategory => {
     const filteredByCategory = favorites.filter(
@@ -82,6 +83,7 @@ const Home = () => {
             <TouchableOpacity
               onPress={() => {
                 setShowFavorites(!showFavorites);
+                getFavorites();
               }}>
               {showFavorites ? (
                 <Image
@@ -268,7 +270,10 @@ const Home = () => {
         )}
       </ScrollView>
       {!onInputFocus && (
-        <TouchableOpacity activeOpacity={0.7} style={styles.addBtnContainer}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.addBtnContainer}
+          onPress={() => navigation.navigate('CreateRecipe')}>
           <Image
             source={require('../../../assets/images/icons/add.png')}
             style={{}}

@@ -13,33 +13,60 @@ const Filter = () => {
   const navigation = useNavigation();
   const [category, setCategory] = useState(null);
   const [checkCategory, setCheckCategory] = useState(categories);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
   const [checkboxDifficulty, setCheckboxDifficulty] = useState([
     {
+      id: 1,
       difficulty: 'Easy',
       checked: false,
     },
     {
+      id: 2,
       difficulty: 'Medium',
       checked: false,
     },
     {
+      id: 3,
       difficulty: 'Hard',
       checked: false,
     },
   ]);
   const {setCommonFilter, commonFilter} = useStore();
   const [sliderValues, setSliderValues] = useState([35, 60]);
+
   console.log('commonFilter', commonFilter);
   const handleValuesChange = values => {
     setSliderValues(values);
   };
 
   const saveFilters = () => {
-    const filtered = commonFilter.filter(dish => dish.dfficulty === 'Easy');
+    const filtered = commonFilter.filter(dish => {
+      dish.dfficulty === 'Easy';
+    });
     setCommonFilter(filtered);
   };
 
+  const selectDifficulty = selectedBox => {
+    const checked = checkboxDifficulty.map(box => {
+      console.log('selectedBox', selectedBox);
+      if (box.id === selectedBox.id) {
+        return {
+          ...box,
+          checked: true,
+        };
+      }
+      return {
+        ...box,
+        checked: false,
+      };
+    });
+    setCheckboxDifficulty(checked);
+    setSelectedCategoryId(selectedBox.difficulty);
+  };
+
   const selectCategory = selectedCategory => {
+    console.log('selectedCategory', selectedCategory);
     setCategory(selectedCategory.category);
     const checked = categories.map(cat => {
       if (cat.id === selectedCategory.id) {
@@ -54,6 +81,7 @@ const Filter = () => {
       };
     });
     setCheckCategory(checked);
+    setSelectedCategoryId(selectedCategory.dfficulty);
     // setFilteredCategory(filteredByCategory);
   };
 
@@ -142,9 +170,44 @@ const Filter = () => {
             />
           );
         })} */}
-        {/* {checkboxDifficulty.map((item, idx) => (
-          <CheckBox item={item} key={idx} />
-        ))} */}
+        {checkboxDifficulty.map((item, idx) => (
+          <TouchableOpacity
+            onPress={() => {
+              selectDifficulty(item);
+            }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 10,
+            }}>
+            <View
+              style={{
+                width: 24,
+                height: 24,
+                backgroundColor: '#FFC20E',
+                borderColor: '#FFC20E',
+                borderWidth: 1,
+                borderRadius: 6,
+                marginRight: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              {item.checked ? (
+                <Image
+                  source={require('../../../assets/images/icons/checkbox.png')}
+                />
+              ) : null}
+            </View>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: '400',
+                color: '#fff',
+              }}>
+              {item.difficulty}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <View style={styles.footer}>

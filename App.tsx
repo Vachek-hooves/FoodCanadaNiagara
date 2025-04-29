@@ -2,12 +2,15 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import StackNav from './src/navigation/Stack';
 import {StoreProvider} from './src/store/context';
+import Onboard from './src/screen/stack/Onboard';
+import Onb from './src/screen/stack/Onb';
 
 const App = () => {
   return (
     <NavigationContainer>
       <StoreProvider>
-        <StackNav />
+        {/* <StackNav /> */}
+        <Onb />
       </StoreProvider>
     </NavigationContainer>
   );
