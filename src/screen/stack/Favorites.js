@@ -96,7 +96,7 @@ const Favorites = () => {
             />
           </View>
         </View>
-        <ScrollView horizontal>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View
             style={{
               flexDirection: 'row',

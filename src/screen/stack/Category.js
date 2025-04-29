@@ -74,7 +74,7 @@ const Category = ({route}) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{paddingLeft: 16}}>
-          {popularDishes.map(dish => (
+          {popularDishes.splice(0, 5).map(dish => (
             <DishCard dish={dish} key={dish.id} />
           ))}
         </ScrollView>

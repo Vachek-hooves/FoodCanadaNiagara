@@ -143,7 +143,7 @@ const Home = () => {
         {onInputFocus && (
           <View style={{marginHorizontal: 16}}>
             {searchDish.map(dish => (
-              <View>
+              <View key={dish.id}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -173,7 +173,7 @@ const Home = () => {
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   style={{paddingLeft: 16}}>
-                  {popularDishes.map(dish => (
+                  {popularDishes.splice(0, 5).map(dish => (
                     <DishCard dish={dish} key={dish.id} />
                   ))}
                 </ScrollView>

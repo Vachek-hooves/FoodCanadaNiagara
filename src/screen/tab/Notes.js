@@ -135,6 +135,7 @@ const Notes = () => {
             <TouchableOpacity
               onPress={() => {
                 setShowFavorites(!showFavorites);
+                navigation.navigate('Favorites');
               }}>
               {showFavorites ? (
                 <Image
@@ -210,11 +211,9 @@ const Notes = () => {
               textDayFontSize: 13,
               textDayFontWeight: '600',
             }}
-            // Callback that gets called when the user selects a day
             onDayPress={day => {
               console.log('selected day', day);
             }}
-            // Mark specific dates as marked
             markedDates={{
               '2025-04-29': {
                 marked: true,

@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 
-const CheckBox = ({isChecked, onChange, label}) => {
+const CheckBox = ({item}) => {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -13,17 +13,17 @@ const CheckBox = ({isChecked, onChange, label}) => {
         style={{
           width: 24,
           height: 24,
-          backgroundColor: isChecked ? '#FFC20E' : 'transparent',
-          borderColor: isChecked ? '#FFC20E' : '#fff',
+          backgroundColor: '#FFC20E',
+          borderColor: '#FFC20E',
           borderWidth: 1,
           borderRadius: 6,
           marginRight: 10,
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        {isChecked ? (
+        {/* {isChecked ? (
           <Image source={require('../../assets/images/icons/checkbox.png')} />
-        ) : null}
+        ) : null} */}
       </View>
       <Text
         style={{
@@ -31,7 +31,7 @@ const CheckBox = ({isChecked, onChange, label}) => {
           fontWeight: '400',
           color: '#fff',
         }}>
-        {label}
+        {item.difficulty}
       </Text>
     </TouchableOpacity>
   );

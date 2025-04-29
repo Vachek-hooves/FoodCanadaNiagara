@@ -63,7 +63,7 @@ const DishCard = ({dish}) => {
   };
 
   return (
-    <View style={styles.popularRecipesCard} key={dish.id}>
+    <View style={styles.popularRecipesCard}>
       <Image source={dish.image} style={styles.popularRecipeImage} />
       <View style={{padding: 10}}>
         <Text numberOfLines={1} style={styles.popularRecipeTitle}>

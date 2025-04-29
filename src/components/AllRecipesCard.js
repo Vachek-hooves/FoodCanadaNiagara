@@ -66,8 +66,7 @@ const AllRecipesCard = ({dish}) => {
     <TouchableOpacity
       onPress={() => navigation.navigate('RecipeCard', dish)}
       activeOpacity={0.7}
-      style={styles.recipesCard}
-      key={dish.id}>
+      style={styles.recipesCard}>
       <Image source={dish.image} style={styles.popularRecipeImage} />
       <View style={{padding: 10}}>
         <Text numberOfLines={1} style={styles.popularRecipeTitle}>
@@ -76,6 +75,7 @@ const AllRecipesCard = ({dish}) => {
         <Text numberOfLines={1} style={styles.popularRecipeDescription}>
           {dish.description}
         </Text>
+
         <View
           style={{
             flexDirection: 'row',
