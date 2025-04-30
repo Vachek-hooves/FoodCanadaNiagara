@@ -1,5 +1,6 @@
 import {
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -23,80 +24,82 @@ const ContactWithUs = () => {
 
   return (
     <Layout>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Image
-            source={require('../../../assets/images/icons/backArrow.png')}
-          />
-          <Text style={styles.headerText}>Back</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={{marginHorizontal: 16}}>
-        <Text style={styles.blockTitleText}>Contact with us</Text>
-      </View>
-
-      <View style={{marginHorizontal: 16}}>
-        <Text style={styles.secondaryText}>First name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Your name"
-          value={name}
-          placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setName}
-        />
-        <Text style={styles.secondaryText}>Mobile number</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="+7 (XXX) XXX XX XX"
-          value={number}
-          placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setNumber}
-        />
-        <Text style={styles.secondaryText}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="ivanivanov@gmail.com"
-          value={email}
-          placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setEmail}
-        />
-        <Text style={styles.secondaryText}>Description</Text>
-        <TextInput
-          textAlignVertical="top"
-          style={[styles.input, {height: 88}]}
-          placeholder="Description"
-          value={description}
-          placeholderTextColor="rgba(60, 60, 67, 0.6)"
-          onChangeText={setDescription}
-        />
-      </View>
-
-      <View style={styles.footer}>
-        <View style={{marginHorizontal: 16, alignItems: 'center'}}>
+      <ScrollView>
+        <View style={styles.headerContainer}>
           <TouchableOpacity
-            onPress={() => sendForm()}
+            onPress={() => navigation.goBack()}
             activeOpacity={0.7}
             style={{
-              width: '100%',
-              height: 56,
-              borderRadius: 20,
-              backgroundColor: '#FFC20E',
-              justifyContent: 'center',
+              flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
-              Send
-            </Text>
+            <Image
+              source={require('../../../assets/images/icons/backArrow.png')}
+            />
+            <Text style={styles.headerText}>Back</Text>
           </TouchableOpacity>
         </View>
-      </View>
+
+        <View style={{marginHorizontal: 16}}>
+          <Text style={styles.blockTitleText}>Contact with us</Text>
+        </View>
+
+        <View style={{marginHorizontal: 16}}>
+          <Text style={styles.secondaryText}>First name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Your name"
+            value={name}
+            placeholderTextColor="rgba(60, 60, 67, 0.6)"
+            onChangeText={setName}
+          />
+          <Text style={styles.secondaryText}>Mobile number</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="+7 (XXX) XXX XX XX"
+            value={number}
+            placeholderTextColor="rgba(60, 60, 67, 0.6)"
+            onChangeText={setNumber}
+          />
+          <Text style={styles.secondaryText}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="ivanivanov@gmail.com"
+            value={email}
+            placeholderTextColor="rgba(60, 60, 67, 0.6)"
+            onChangeText={setEmail}
+          />
+          <Text style={styles.secondaryText}>Description</Text>
+          <TextInput
+            textAlignVertical="top"
+            style={[styles.input, {height: 88, marginBottom: 150}]}
+            placeholder="Description"
+            value={description}
+            placeholderTextColor="rgba(60, 60, 67, 0.6)"
+            onChangeText={setDescription}
+          />
+        </View>
+
+        <View style={styles.footer}>
+          <View style={{marginHorizontal: 16, alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={() => sendForm()}
+              activeOpacity={0.7}
+              style={{
+                width: '100%',
+                height: 56,
+                borderRadius: 20,
+                backgroundColor: '#FFC20E',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
+                Send
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
     </Layout>
   );
 };

@@ -62,6 +62,7 @@ const Onboard = () => {
                 />
               </TouchableOpacity>
             </View>
+
             {currentStep === 1 && (
               <View>
                 <View
