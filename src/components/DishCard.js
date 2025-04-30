@@ -14,7 +14,7 @@ const {
 const DishCard = ({dish}) => {
   const [iconColor, setIconColor] = useState(false);
   const isFocused = useIsFocused();
-  const {setFavorites, focused} = useStore();
+  const {setFavorites, setFocused} = useStore();
   const navigation = useNavigation();
 
   useEffect(() => {
