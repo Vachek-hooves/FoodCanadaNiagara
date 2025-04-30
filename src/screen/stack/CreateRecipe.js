@@ -28,6 +28,9 @@ const CreateRecipe = () => {
   const [category, setCategory] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [rating, setRating] = useState(0);
+  const [min, setMin] = useState(0);
+  const [hours, setHours] = useState(0);
+  const [sec, setSec] = useState(0);
   const [checkCategory, setCheckCategory] = useState([
     {
       id: 1,
@@ -63,17 +66,28 @@ const CreateRecipe = () => {
   const [showTime, setShowTime] = useState(false);
   const [selectedTime, setSelectedTime] = useState(null);
 
-  const formatTime = ({minutes}) => {
+  console.log('sec', sec);
+
+  const formatTime = ({minutes, hours, seconds}) => {
     const timeParts = [];
 
-    if (minutes !== undefined) {
-      timeParts.push(minutes.toString().padStart(2, '0'));
+    console.log('hours', hours);
+
+    if (hours !== undefined || hours !== 0) {
+      setHours(hours.toString().padStart(2, '0'));
+      console.log('seth', hours);
+    }
+    if (minutes !== undefined || minutes !== 0) {
+      setMin(minutes.toString().padStart(2, '0'));
+    }
+    if (seconds !== undefined || seconds !== 0) {
+      setSec(seconds.toString().padStart(2, '0'));
     }
 
     setSelectedTime(timeParts);
   };
 
-  const isDisabled = heading === '' || description === '' || difficulty === '';
+  const isDisabled = heading === '' || description === '';
 
   const handleRating = star => {
     setRating(star);
@@ -305,10 +319,24 @@ const CreateRecipe = () => {
                 source={require('../../../assets/images/icons/notesTime.png')}
                 style={{position: 'absolute', left: -50}}
               />
-              <Text style={styles.deadlinesText}>
-                {showTime && selectedTime} {showTime && 'min'}
-                {!showTime && 'Time'}
-              </Text>
+              {hours > 0 && (
+                <Text style={styles.deadlinesText}>
+                  {showTime && hours} {showTime && 'hour'}
+                  {!showTime && 'Time'}
+                </Text>
+              )}
+              {min > 0 && (
+                <Text style={styles.deadlinesText}>
+                  {showTime && min} {showTime && 'min'}
+                  {!showTime && 'Time'}
+                </Text>
+              )}
+              {sec > 0 && (
+                <Text style={styles.deadlinesText}>
+                  {showTime && sec} {showTime && 'sec'}
+                  {!showTime && 'Time'}
+                </Text>
+              )}
             </View>
 
             <Image

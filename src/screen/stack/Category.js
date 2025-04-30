@@ -9,23 +9,25 @@ import {
 } from 'react-native';
 import Layout from '../../components/Layout';
 import {dishes} from '../../data/dishes';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import DishCard from '../../components/DishCard';
 import AllRecipesCard from '../../components/AllRecipesCard';
 import {useStore} from '../../store/context';
+import {useEffect} from 'react';
 
 const Category = ({route}) => {
   const navigation = useNavigation();
   const selectedCategory = route.params.category;
   const {commonFilter} = useStore();
+  const isFocused = useIsFocused();
 
-  const popularDishes = [...dishes].slice(0, 6);
+  const popularDishes = [...dishes];
 
   const selectedCategoryArray = commonFilter.filter(
     dish => dish.category === selectedCategory,
   );
 
-  console.log('selectedCategoryArray', selectedCategoryArray);
+  useEffect(() => {});
 
   return (
     <Layout>
@@ -73,9 +75,22 @@ const Category = ({route}) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{paddingLeft: 16}}>
-          {popularDishes.splice(0, 5).map(dish => (
-            <DishCard dish={dish} key={dish.id} />
-          ))}
+          {selectedCategory === 'Lunch' &&
+            popularDishes
+              .slice(0, 5)
+              .map(dish => <DishCard dish={dish} key={dish.id} />)}
+          {selectedCategory === 'Breakfast' &&
+            popularDishes
+              .slice(5, 10)
+              .map(dish => <DishCard dish={dish} key={dish.id} />)}
+          {selectedCategory === 'Snacks' &&
+            popularDishes
+              .slice(10, 15)
+              .map(dish => <DishCard dish={dish} key={dish.id} />)}
+          {selectedCategory === 'Dinner' &&
+            popularDishes
+              .slice(15, 20)
+              .map(dish => <DishCard dish={dish} key={dish.id} />)}
         </ScrollView>
         <View style={{marginHorizontal: 16, marginBottom: 20}}>
           <Text style={styles.blockTitleText}>All recipes</Text>

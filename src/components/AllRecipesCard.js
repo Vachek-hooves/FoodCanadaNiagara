@@ -14,7 +14,7 @@ const AllRecipesCard = ({dish}) => {
   const [iconColor, setIconColor] = useState(false);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
-  const {favorites, setFavorites} = useStore();
+  const {favorites, setFavorites, setFocused} = useStore();
 
   useEffect(() => {
     renderFavorites(dish);

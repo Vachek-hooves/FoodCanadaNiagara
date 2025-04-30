@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useStore} from '../store/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const {
   View,
@@ -14,7 +14,8 @@ const {
 const DishCard = ({dish}) => {
   const [iconColor, setIconColor] = useState(false);
   const isFocused = useIsFocused();
-  const {favorites, setFavorites} = useStore();
+  const {setFavorites, focused} = useStore();
+  const navigation = useNavigation();
 
   useEffect(() => {
     renderFavorites(dish);
@@ -63,7 +64,10 @@ const DishCard = ({dish}) => {
   };
 
   return (
-    <View style={styles.popularRecipesCard}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      style={styles.popularRecipesCard}
+      onPress={() => navigation.navigate('RecipeCard', dish)}>
       <Image source={dish.image} style={styles.popularRecipeImage} />
       <View style={{padding: 10}}>
         <Text numberOfLines={1} style={styles.popularRecipeTitle}>
@@ -95,7 +99,7 @@ const DishCard = ({dish}) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

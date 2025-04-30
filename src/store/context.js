@@ -10,6 +10,7 @@ export const StoreProvider = ({children}) => {
   const [favorites, setFavorites] = useState([]);
   const [commonFilter, setCommonFilter] = useState(dishes);
   const [filterIcon, setFilterIcon] = useState(false);
+  const [focused, setFocused] = useState(false);
 
   const value = {
     favorites,
@@ -18,6 +19,8 @@ export const StoreProvider = ({children}) => {
     setCommonFilter,
     filterIcon,
     setFilterIcon,
+    focused,
+    setFocused,
   };
 
   return (
