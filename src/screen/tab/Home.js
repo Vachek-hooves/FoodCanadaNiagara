@@ -32,7 +32,7 @@ const Home = () => {
     dish.title.toLowerCase().includes(onChangeValue.toLowerCase()),
   );
 
-  const popularDishes = [...dishes].slice(0, 6);
+  const popularDishes = [...dishes].slice(3, 9);
 
   const getFavorites = async () => {
     try {

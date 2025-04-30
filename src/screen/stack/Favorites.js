@@ -123,12 +123,12 @@ const Favorites = () => {
           </View>
         </ScrollView>
 
-        <View style={{marginBottom: 100}}>
-          {favorites.length === 0 && (
+        <View style={{marginBottom: 10}}>
+          {filteredCategory.length === 0 && (
             <View
               style={{
                 alignItems: 'center',
-                marginTop: 60,
+                marginTop: 50,
                 marginHorizontal: 40,
               }}>
               <Image
@@ -150,7 +150,7 @@ const Favorites = () => {
             gap: 10,
             marginBottom: 50,
           }}>
-          {favorites.map(dish => (
+          {filteredCategory.map(dish => (
             <AllRecipesCard dish={dish} key={dish.id} />
           ))}
         </View>
