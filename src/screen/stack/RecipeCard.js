@@ -4,6 +4,8 @@ import {useNavigation} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
 import MainButton from '../../components/MainButton';
 import Layout from '../../components/Layout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useStore} from '../../store/context';
 
 const RecipeCard = ({route}) => {
   const recipe = route.params;
@@ -25,7 +27,9 @@ const RecipeCard = ({route}) => {
             />
             <Text style={styles.headerText}>Back</Text>
           </TouchableOpacity>
-          <Image source={require('../../../assets/images/icons/fav.png')} />
+          <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
+            <Image source={require('../../../assets/images/icons/fav.png')} />
+          </TouchableOpacity>
         </View>
         <View style={{marginHorizontal: 16}}>
           <Text style={styles.recipeTitle}>{recipe.title}</Text>
@@ -66,7 +70,21 @@ const RecipeCard = ({route}) => {
         </View>
         <View style={styles.footer}>
           <View style={{marginHorizontal: 16, alignItems: 'center'}}>
-            <MainButton text={'Save'} />
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              activeOpacity={0.7}
+              style={{
+                width: '100%',
+                height: 56,
+                borderRadius: 20,
+                backgroundColor: '#FFC20E',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
+                Save
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

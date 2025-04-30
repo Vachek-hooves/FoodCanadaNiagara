@@ -19,32 +19,6 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [filteredCategory, setFilteredCategory] = useState([]);
   const [checkCategory, setCheckCategory] = useState(categories);
-  // const categories = [
-  //   {
-  //     category: 'Breakfast',
-  //     checked: true,
-  //   },
-  //   {
-  //     category: 'Lunch',
-  //     checked: false,
-  //   },
-  //   {
-  //     category: 'Dinner',
-  //     checked: false,
-  //   },
-  //   {
-  //     category: 'Snacks',
-  //     checked: false,
-  //   },
-  //   {
-  //     category: 'Fast Food',
-  //     checked: false,
-  //   },
-  //   {
-  //     category: 'Bakery',
-  //     checked: false,
-  //   },
-  // ];
 
   useEffect(() => {
     const getFavorites = async () => {
@@ -148,6 +122,25 @@ const Favorites = () => {
             ))}
           </View>
         </ScrollView>
+
+        <View style={{marginBottom: 100}}>
+          {favorites.length === 0 && (
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 60,
+                marginHorizontal: 40,
+              }}>
+              <Image
+                source={require('../../../assets/images/icons/close.png')}
+              />
+              <Text style={styles.closeText}>
+                There are no favourite receipts, add some from the list
+              </Text>
+            </View>
+          )}
+        </View>
+
         <View
           style={{
             flexDirection: 'row',
@@ -201,6 +194,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 18,
     left: 20,
+  },
+  closeText: {
+    fontWeight: '400',
+    fontSize: 24,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 17,
   },
   popularRecipesCard: {
     backgroundColor: '#fff',

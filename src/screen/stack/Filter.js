@@ -1,20 +1,25 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Layout from '../../components/Layout';
-import MainButton from '../../components/MainButton';
 import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
-import CheckBox from '../../components/CheckBox';
-import {dishes} from '../../data/dishes';
 import {categories} from '../../data/categories';
 import {useStore} from '../../store/context';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import {dishes} from '../../data/dishes';
 
 const Filter = () => {
   const navigation = useNavigation();
   const [category, setCategory] = useState(null);
   const [checkCategory, setCheckCategory] = useState(categories);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+
   const [checkboxDifficulty, setCheckboxDifficulty] = useState([
     {
       id: 1,
@@ -32,24 +37,29 @@ const Filter = () => {
       checked: false,
     },
   ]);
-  const {setCommonFilter, commonFilter} = useStore();
+  const {setCommonFilter, commonFilter, setFilterIcon} = useStore();
   const [sliderValues, setSliderValues] = useState([35, 60]);
 
-  console.log('commonFilter', commonFilter);
   const handleValuesChange = values => {
     setSliderValues(values);
   };
 
+  const resetFilter = () => {
+    setFilterIcon(false);
+    setCommonFilter(dishes);
+  };
+
   const saveFilters = () => {
     const filtered = commonFilter.filter(dish => {
-      dish.dfficulty === 'Easy';
+      return dish.dfficulty === selectedCategoryId;
     });
     setCommonFilter(filtered);
+    setFilterIcon(true);
+    navigation.goBack();
   };
 
   const selectDifficulty = selectedBox => {
     const checked = checkboxDifficulty.map(box => {
-      console.log('selectedBox', selectedBox);
       if (box.id === selectedBox.id) {
         return {
           ...box,
@@ -66,7 +76,6 @@ const Filter = () => {
   };
 
   const selectCategory = selectedCategory => {
-    console.log('selectedCategory', selectedCategory);
     setCategory(selectedCategory.category);
     const checked = categories.map(cat => {
       if (cat.id === selectedCategory.id) {
@@ -82,152 +91,135 @@ const Filter = () => {
     });
     setCheckCategory(checked);
     setSelectedCategoryId(selectedCategory.dfficulty);
-    // setFilteredCategory(filteredByCategory);
   };
 
   return (
     <Layout>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-          style={{
-            flexDirection: 'row',
-            marginRight: '28%',
-            alignItems: 'center',
-          }}>
-          <Image
-            source={require('../../../assets/images/icons/backArrow.png')}
-          />
-          <Text style={styles.headerText}>Back</Text>
-        </TouchableOpacity>
-        <Text style={[styles.headerText, {fontWeight: '600'}]}>Filters</Text>
-      </View>
-      <View style={styles.filterWrap}>
-        <Image source={require('../../../assets/images/icons/clock.png')} />
-        <View style={styles.container}>
-          <MultiSlider
-            style={styles.slider}
-            values={sliderValues}
-            sliderLength={320}
-            onValuesChange={handleValuesChange}
-            min={0}
-            max={100}
-            step={1}
-            allowOverlap={false}
-            snapped
-            markerStyle={styles.marker}
-            pressedMarkerStyle={styles.pressed}
-            selectedStyle={styles.selectedTrack}
-            unselectedStyle={styles.unselectedTrack}
-          />
-          <View style={{flexDirection: 'row', gap: 30}}>
-            <Text style={styles.sliderText}>{sliderValues[0]} min</Text>
-            <Text style={styles.sliderText}>{sliderValues[1]} min</Text>
-          </View>
-        </View>
-      </View>
-      <View style={{marginHorizontal: 16}}>
-        <Text style={styles.blockTitleText}>Types of dishes</Text>
-      </View>
-      <View style={styles.categoriesWrap}>
-        {checkCategory.map((category, idx) => (
+      <ScrollView>
+        <View style={styles.headerContainer}>
           <TouchableOpacity
+            onPress={() => navigation.goBack()}
             activeOpacity={0.7}
-            onPress={() => selectCategory(category)}
-            key={idx}
-            style={[
-              styles.categoryContainer,
-              category.checked && {backgroundColor: '#fff'},
-            ]}>
-            <Text
-              style={[
-                styles.categoryText,
-                category.checked && {color: '#000'},
-              ]}>
-              {category.category}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <View style={{marginHorizontal: 16}}>
-        <Text style={styles.blockTitleText}>Recipe difficulty</Text>
-      </View>
-
-      <View style={{marginHorizontal: 16}}>
-        {/* {Object.entries(colorsChecked).map(([color, value]) => {
-          return (
-            <CheckBox
-              label={color}
-              key={color}
-              isChecked={value}
-              onChange={() => {
-                setColorsChecked({
-                  ...colorsChecked,
-                  [color]: !colorsChecked[color],
-                });
-              }}
-            />
-          );
-        })} */}
-        {checkboxDifficulty.map((item, idx) => (
-          <TouchableOpacity
-            onPress={() => {
-              selectDifficulty(item);
-            }}
             style={{
               flexDirection: 'row',
+              marginRight: '28%',
               alignItems: 'center',
-              marginVertical: 10,
             }}>
-            <View
-              style={{
-                width: 24,
-                height: 24,
-                backgroundColor: '#FFC20E',
-                borderColor: '#FFC20E',
-                borderWidth: 1,
-                borderRadius: 6,
-                marginRight: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              {item.checked ? (
-                <Image
-                  source={require('../../../assets/images/icons/checkbox.png')}
-                />
-              ) : null}
-            </View>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '400',
-                color: '#fff',
-              }}>
-              {item.difficulty}
-            </Text>
+            <Image
+              source={require('../../../assets/images/icons/backArrow.png')}
+            />
+            <Text style={styles.headerText}>Back</Text>
           </TouchableOpacity>
-        ))}
-      </View>
+          <Text style={[styles.headerText, {fontWeight: '600'}]}>Filters</Text>
+        </View>
+        <View style={styles.filterWrap}>
+          <Image source={require('../../../assets/images/icons/clock.png')} />
+          <View style={styles.container}>
+            <MultiSlider
+              style={styles.slider}
+              values={sliderValues}
+              sliderLength={320}
+              onValuesChange={handleValuesChange}
+              min={0}
+              max={100}
+              step={1}
+              allowOverlap={false}
+              snapped
+              markerStyle={styles.marker}
+              pressedMarkerStyle={styles.pressed}
+              selectedStyle={styles.selectedTrack}
+              unselectedStyle={styles.unselectedTrack}
+            />
+            <View style={{flexDirection: 'row', gap: 30}}>
+              <Text style={styles.sliderText}>{sliderValues[0]} min</Text>
+              <Text style={styles.sliderText}>{sliderValues[1]} min</Text>
+            </View>
+          </View>
+        </View>
+        <View style={{marginHorizontal: 16}}>
+          <Text style={styles.blockTitleText}>Types of dishes</Text>
+        </View>
+        <View style={styles.categoriesWrap}>
+          {checkCategory.map((category, idx) => (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => selectCategory(category)}
+              key={idx}
+              style={[
+                styles.categoryContainer,
+                category.checked && {backgroundColor: '#fff'},
+              ]}>
+              <Text
+                style={[
+                  styles.categoryText,
+                  category.checked && {color: '#000'},
+                ]}>
+                {category.category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={{marginHorizontal: 16}}>
+          <Text style={styles.blockTitleText}>Recipe difficulty</Text>
+        </View>
 
+        <View style={{marginHorizontal: 16, paddingBottom: 180}}>
+          {checkboxDifficulty.map((item, idx) => (
+            <TouchableOpacity
+              key={idx}
+              onPress={() => {
+                selectDifficulty(item);
+              }}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 10,
+              }}>
+              <View
+                style={{
+                  width: 24,
+                  height: 24,
+                  backgroundColor: item.checked ? '#FFC20E' : '#fff',
+                  borderColor: item.checked ? '#FFC20E' : '#fff',
+                  borderWidth: 1,
+                  borderRadius: 6,
+                  marginRight: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {item.checked ? (
+                  <Image
+                    source={require('../../../assets/images/icons/checkbox.png')}
+                  />
+                ) : null}
+              </View>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: '400',
+                  color: '#fff',
+                }}>
+                {item.difficulty}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
       <View style={styles.footer}>
         <View style={{marginHorizontal: 16, alignItems: 'center'}}>
           <TouchableOpacity
             onPress={() => saveFilters()}
             activeOpacity={0.7}
-            style={{
-              width: '100%',
-              height: 56,
-              borderRadius: 20,
-              backgroundColor: '#FFC20E',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+            style={styles.mainBtn}>
             <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
               Save
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              resetFilter(), navigation.goBack;
+            }}>
             <Text style={styles.resetBtnText}>Reset</Text>
           </TouchableOpacity>
         </View>
@@ -243,9 +235,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 25,
   },
+  mainBtn: {
+    width: '100%',
+    height: 56,
+    borderRadius: 20,
+    backgroundColor: '#FFC20E',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
-    // padding: 20,
-
     alignItems: 'center',
   },
   filterWrap: {

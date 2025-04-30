@@ -28,6 +28,7 @@ const Notes = () => {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [formData, setFormData] = useState([]);
   const [filteredData, setFilteredData] = useState(formData);
+  const {filterIcon} = useStore();
   const [checkCategory, setCheckCategory] = useState([
     {
       id: 1,
@@ -148,9 +149,15 @@ const Notes = () => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Filter')}>
-              <Image
-                source={require('../../../assets/images/icons/filter.png')}
-              />
+              {filterIcon ? (
+                <Image
+                  source={require('../../../assets/images/icons/useFilter.png')}
+                />
+              ) : (
+                <Image
+                  source={require('../../../assets/images/icons/filter.png')}
+                />
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -186,11 +193,6 @@ const Notes = () => {
             monthFormat="MMMM yyyy"
             showSixWeeks={true}
             hideExtraDays={true}
-            style={
-              {
-                // backgroundColor: 'transparent',
-              }
-            }
             theme={{
               calendarBackground: 'transparent',
               textSectionTitleColor: '#ffffff',
@@ -209,17 +211,6 @@ const Notes = () => {
             }}
             onDayPress={day => {
               console.log('selected day', day);
-            }}
-            markedDates={{
-              '2025-04-29': {
-                marked: true,
-                selectedColor: 'blue',
-              },
-              '2012-03-02': {marked: true},
-              '2012-03-03': {
-                marked: true,
-                selectedColor: 'blue',
-              },
             }}
           />
         )}
@@ -250,6 +241,19 @@ const Notes = () => {
             </TouchableOpacity>
           ))}
         </View>
+        {filteredData.length === 0 && (
+          <View
+            style={{
+              alignItems: 'center',
+              marginTop: 100,
+              marginHorizontal: 40,
+            }}>
+            <Image source={require('../../../assets/images/icons/close.png')} />
+            <Text style={styles.closeText}>
+              There are no notes, please add some by tap for the button
+            </Text>
+          </View>
+        )}
         <View
           style={{
             flexDirection: 'row',
@@ -259,22 +263,6 @@ const Notes = () => {
             justifyContent: 'space-between',
             marginBottom: 140,
           }}>
-          {filteredData.length === 0 && (
-            <View
-              style={{
-                alignItems: 'center',
-                marginTop: 100,
-                marginHorizontal: 40,
-              }}>
-              <Image
-                source={require('../../../assets/images/icons/close.png')}
-              />
-              <Text style={styles.closeText}>
-                There are no notes, please add some by tap for the button
-              </Text>
-            </View>
-          )}
-
           {filteredData.map((note, idx) => (
             <NotesCard note={note} key={idx} />
           ))}

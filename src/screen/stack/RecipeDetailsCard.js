@@ -79,7 +79,9 @@ const RecipeDetailsCard = ({route}) => {
             />
             <Text style={styles.headerText}>Back</Text>
           </TouchableOpacity>
-          <Image source={require('../../../assets/images/icons/fav.png')} />
+          <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
+            <Image source={require('../../../assets/images/icons/fav.png')} />
+          </TouchableOpacity>
         </View>
         <View style={{marginHorizontal: 16}}>
           <Text
@@ -107,7 +109,7 @@ const RecipeDetailsCard = ({route}) => {
                 borderBottomColor: 'rgba(153, 153, 153, 0.5)',
                 borderBottomWidth: 1,
               }}>
-              <Text style={styles.ingredientsTitle}>Tasks</Text>
+              <Text style={styles.ingredientsTitle}>Ingredients</Text>
               <TouchableOpacity onPress={() => setHideTasks(!hideTasks)}>
                 <Image
                   source={require('../../../assets/images/icons/arrUp.png')}

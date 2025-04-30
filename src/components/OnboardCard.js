@@ -10,22 +10,6 @@ const {
 } = require('react-native');
 
 const OnboardCard = ({note}) => {
-  const removeNotes = async () => {
-    const jsonValue = await AsyncStorage.getItem('myRecipeDeleted');
-    let recipe = jsonValue != null ? JSON.parse(jsonValue) : [];
-    const filtered = recipe.filter(item => item.id !== note.id);
-
-    const json = await AsyncStorage.getItem('myRecipe');
-    let recipeDeleted = json != null ? JSON.parse(json) : [];
-
-    recipeDeleted.push(note);
-
-    await AsyncStorage.setItem('myRecipe', JSON.stringify(recipeDeleted));
-
-    await AsyncStorage.setItem('myRecipeDeleted', JSON.stringify(filtered));
-    console.log('remove');
-  };
-
   return (
     <View activeOpacity={0.7} style={styles.recipesCard} key={note}>
       <Image source={note.image} style={styles.popularRecipeImage} />
@@ -34,21 +18,16 @@ const OnboardCard = ({note}) => {
           <Text
             numberOfLines={1}
             style={{
-              fontSize: 13,
-              fontWeight: '400',
-              color: '#999999',
+              fontSize: 15,
+              fontWeight: '700',
+              color: '#1B281B',
+              paddingTop: 10,
+              marginBottom: 5,
             }}>
-            {note.selectedDate}
+            {note.title}
           </Text>
         </View>
-        <Text
-          numberOfLines={1}
-          style={{
-            fontSize: 15,
-            fontWeight: '700',
-          }}>
-          {note.heading}
-        </Text>
+
         <Text
           numberOfLines={1}
           style={{
@@ -58,22 +37,18 @@ const OnboardCard = ({note}) => {
           }}>
           {note.description}
         </Text>
-        <TouchableOpacity
+        <View
           onPress={() => removeNotes()}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text
-            numberOfLines={1}
-            style={{
-              fontSize: 13,
-              fontWeight: '400',
-              color: '#999999',
-            }}>
-            {note.rating <= 2 && 'Easy'}
-            {note.rating === 3 && 'Medium'}
-            {note.rating > 3 && 'Hard'}
-          </Text>
-          <Image source={require('../../assets/images/icons/gobackArr.png')} />
-        </TouchableOpacity>
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 10,
+          }}>
+          <Image source={require('../../assets/images/Rating.png')} />
+          <Image
+            source={require('../../assets/images/icons/checkedHeart.png')}
+          />
+        </View>
       </View>
     </View>
   );
@@ -83,7 +58,7 @@ const styles = StyleSheet.create({
   recipesCard: {
     backgroundColor: '#fff',
     paddingBottom: 10,
-    width: '20%',
+    width: '40%',
     borderRadius: 12,
     marginRight: 10,
   },

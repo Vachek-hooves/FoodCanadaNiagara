@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {categories} from '../../data/categories';
 import {exploreCategories} from '../../data/exploreCategories';
 import {dishes} from '../../data/dishes';
@@ -22,7 +22,7 @@ import AllRecipesCard from '../../components/AllRecipesCard';
 const Home = () => {
   const navigation = useNavigation();
   const [showFavorites, setShowFavorites] = useState(false);
-  const {favorites, setFavorites} = useStore();
+  const {favorites, setFavorites, filterIcon} = useStore();
   const [filteredCategory, setFilteredCategory] = useState([]);
   const [checkCategory, setCheckCategory] = useState(categories);
   const [onInputFocus, setOnInputFocus] = useState(false);
@@ -33,10 +33,6 @@ const Home = () => {
   );
 
   const popularDishes = [...dishes].slice(0, 6);
-
-  // useEffect(() => {
-  //   getFavorites();
-  // }, []);
 
   const getFavorites = async () => {
     try {
@@ -71,10 +67,6 @@ const Home = () => {
     setFilteredCategory(filteredByCategory);
   };
 
-  // useEffect(() => {
-  //   AsyncStorage.clear();
-  // }, []);
-
   return (
     <Layout>
       <ScrollView>
@@ -100,9 +92,15 @@ const Home = () => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Filter')}>
-              <Image
-                source={require('../../../assets/images/icons/filter.png')}
-              />
+              {filterIcon ? (
+                <Image
+                  source={require('../../../assets/images/icons/useFilter.png')}
+                />
+              ) : (
+                <Image
+                  source={require('../../../assets/images/icons/filter.png')}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <View style={{flexDirection: 'row'}}>
@@ -133,7 +131,7 @@ const Home = () => {
               <TouchableOpacity
                 onPress={() => setOnChangeValue('')}
                 activeOpacity={0.6}
-                style={[styles.inputImage, onInputFocus && {left: 380}]}>
+                style={[onInputFocus && {right: 30, top: 17}]}>
                 <Image
                   source={require('../../../assets/images/icons/clearInput.png')}
                 />
@@ -145,7 +143,10 @@ const Home = () => {
         {onInputFocus && (
           <View style={{marginHorizontal: 16}}>
             {searchDish.map(dish => (
-              <View key={dish.id}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={dish.id}
+                onPress={() => navigation.navigate('RecipeCard', dish)}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -158,7 +159,7 @@ const Home = () => {
                   {dish.title}
                 </Text>
                 <Text style={styles.searchSecondaryText}>{dish.time}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -199,7 +200,7 @@ const Home = () => {
                             color: '#fff',
                             position: 'absolute',
                             top: '45%',
-                            left: 70,
+                            left: 65,
                           },
                         ]}>
                         {category.category}
@@ -212,7 +213,7 @@ const Home = () => {
             <View>
               {showFavorites && (
                 <ScrollView>
-                  <View>
+                  <View style={{marginBottom: 140}}>
                     {favorites.length === 0 ? (
                       <View
                         style={{
@@ -396,7 +397,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 25,
   },
-  categoryImg: {width: 200, height: 180, borderRadius: 12},
+  categoryImg: {width: 180, height: 180, borderRadius: 12},
   checkCategoryWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',

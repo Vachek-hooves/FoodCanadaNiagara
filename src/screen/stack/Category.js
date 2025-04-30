@@ -19,8 +19,7 @@ const Category = ({route}) => {
   const selectedCategory = route.params.category;
   const {commonFilter} = useStore();
 
-  const popularDishes = [...dishes].sort(() => Math.random() - 0.5);
-  console.log('popularDishes', popularDishes);
+  const popularDishes = [...dishes].slice(0, 6);
 
   const selectedCategoryArray = commonFilter.filter(
     dish => dish.category === selectedCategory,

@@ -248,47 +248,6 @@ const Settings = () => {
                 source={require('../../../assets/images/icons/nextArrow.png')}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.settingsContainer}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  source={require('../../../assets/images/icons/devSite.png')}
-                />
-                <Text style={styles.settingsSecondaryText}>
-                  Developer Website
-                </Text>
-              </View>
-              <Image
-                source={require('../../../assets/images/icons/nextArrow.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.settingsContainer}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  source={require('../../../assets/images/icons/terms.png')}
-                />
-                <Text style={styles.settingsSecondaryText}>Terms of Use</Text>
-              </View>
-              <Image
-                source={require('../../../assets/images/icons/nextArrow.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.settingsContainer}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  source={require('../../../assets/images/icons/privacy.png')}
-                />
-                <Text style={styles.settingsSecondaryText}>Privacy Policy</Text>
-              </View>
-              <Image
-                source={require('../../../assets/images/icons/nextArrow.png')}
-              />
-            </TouchableOpacity>
 
             {saveProfile && (
               <View>
@@ -308,7 +267,7 @@ const Settings = () => {
                 <TouchableOpacity
                   onPress={() => handleDeleteAccount()}
                   activeOpacity={0.7}
-                  style={styles.settingsContainer}>
+                  style={[styles.settingsContainer, {marginBottom: 140}]}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Image
                       source={require('../../../assets/images/icons/delete.png')}
@@ -338,6 +297,7 @@ const Settings = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginBottom: 24,
+              marginHorizontal: 16,
             }}>
             <Text style={{fontSize: 20, fontWeight: '700', color: '#fff'}}>
               Change name
@@ -350,29 +310,30 @@ const Settings = () => {
               />
             </TouchableOpacity>
           </View>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Your name"
-            value={onChangeValue}
-            placeholderTextColor="rgba(60, 60, 67, 0.6)"
-            onChangeText={setOnChangeValue}
-          />
-          <TouchableOpacity
-            onPress={() => handleChangeName()}
-            activeOpacity={0.7}
-            style={{
-              width: '100%',
-              height: 56,
-              borderRadius: 20,
-              backgroundColor: '#FFC20E',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
-              Save
-            </Text>
-          </TouchableOpacity>
+          <View style={{marginHorizontal: 16}}>
+            <TextInput
+              style={styles.input}
+              placeholder="Your name"
+              value={onChangeValue}
+              placeholderTextColor="rgba(60, 60, 67, 0.6)"
+              onChangeText={setOnChangeValue}
+            />
+            <TouchableOpacity
+              onPress={() => handleChangeName()}
+              activeOpacity={0.7}
+              style={{
+                width: '100%',
+                height: 56,
+                borderRadius: 20,
+                backgroundColor: '#FFC20E',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
+                Save
+              </Text>
+            </TouchableOpacity>
+          </View>
         </CustomModal>
       )}
     </ImageBackground>

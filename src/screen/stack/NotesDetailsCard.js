@@ -11,16 +11,14 @@ import {
 import {useNavigation} from '@react-navigation/native';
 
 import Layout from '../../components/Layout';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NotesDetailsCard = ({route}) => {
   const [checked, setChecked] = useState(false);
   const [hideTasks, setHideTasks] = useState(false);
-  const [formData, setFormData] = useState([]);
-
   const note = route.params;
-  console.log('note', note);
+
   const navigation = useNavigation();
 
   const removeNoteNotifycation = () => {
@@ -51,7 +49,6 @@ const NotesDetailsCard = ({route}) => {
     const filtered = notes.filter(item => item.id === note.id);
     await AsyncStorage.setItem('notes', JSON.stringify(filtered));
     console.log('remove');
-    // setFavorites(filtered);
   };
 
   return (
@@ -70,7 +67,9 @@ const NotesDetailsCard = ({route}) => {
             />
             <Text style={styles.headerText}>Back</Text>
           </TouchableOpacity>
-          <Image source={require('../../../assets/images/icons/fav.png')} />
+          <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
+            <Image source={require('../../../assets/images/icons/fav.png')} />
+          </TouchableOpacity>
         </View>
         <View style={{marginHorizontal: 16}}>
           <Text

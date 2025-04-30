@@ -9,21 +9,20 @@ import {
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {categories} from '../../data/categories';
-import {exploreCategories} from '../../data/exploreCategories';
 import {dishes} from '../../data/dishes';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useStore} from '../../store/context';
 
 import Layout from '../../components/Layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AllRecipesCard from '../../components/AllRecipesCard';
+
 import CustomRecipeCard from '../../components/CustomRecipeCard';
 import DeletedCard from '../../components/DeletedCard';
 
 const Receipts = () => {
   const navigation = useNavigation();
   const [showFavorites, setShowFavorites] = useState(false);
-  const {favorites, setFavorites} = useStore();
+  const {favorites, setFavorites, filterIcon} = useStore();
   const [filteredCategory, setFilteredCategory] = useState([]);
   const [checkCategory, setCheckCategory] = useState(categories);
   const [onInputFocus, setOnInputFocus] = useState(false);
@@ -83,27 +82,6 @@ const Receipts = () => {
     }
   };
 
-  const selectCategory = selectedCategory => {
-    const filteredByCategory = favorites.filter(
-      favorite => favorite.category === selectedCategory.category,
-    );
-
-    const checked = categories.map(cat => {
-      if (cat.id === selectedCategory.id) {
-        return {
-          ...cat,
-          checked: true,
-        };
-      }
-      return {
-        ...cat,
-        checked: false,
-      };
-    });
-    setCheckCategory(checked);
-    setFilteredCategory(filteredByCategory);
-  };
-
   return (
     <Layout>
       <ScrollView>
@@ -129,9 +107,15 @@ const Receipts = () => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Filter')}>
-              <Image
-                source={require('../../../assets/images/icons/filter.png')}
-              />
+              {filterIcon ? (
+                <Image
+                  source={require('../../../assets/images/icons/useFilter.png')}
+                />
+              ) : (
+                <Image
+                  source={require('../../../assets/images/icons/filter.png')}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <View style={{flexDirection: 'row'}}>
@@ -221,7 +205,7 @@ const Receipts = () => {
                 </View>
               </View>
             )}
-            <View>
+            <View style={{marginBottom: 150}}>
               {createdRecipe.length === 0 && deletedRecipies.length === 0 && (
                 <View
                   style={{

@@ -60,7 +60,9 @@ const CreateNote = () => {
   ]);
   const [isEnabled, setIsEnabled] = useState(false);
 
-  console.log('date', selectedTime);
+  console.log('selectedDate', selectedDate);
+
+  const isDisabled = heading === '' || description === '';
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -152,10 +154,15 @@ const CreateNote = () => {
               placeholderTextColor="rgba(60, 60, 67, 0.6)"
               onChangeText={setHeading}
             />
-            <TouchableOpacity activeOpacity={0.7} style={styles.inputImg}>
-              <Image
-                source={require('../../../assets/images/icons/deleteInput.png')}
-              />
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.inputImg}
+              onPress={() => setHeading('')}>
+              {heading !== '' && (
+                <Image
+                  source={require('../../../assets/images/icons/deleteInput.png')}
+                />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -169,10 +176,15 @@ const CreateNote = () => {
               placeholderTextColor="rgba(60, 60, 67, 0.6)"
               onChangeText={setDescription}
             />
-            <TouchableOpacity activeOpacity={0.7} style={styles.inputImg}>
-              <Image
-                source={require('../../../assets/images/icons/deleteInput.png')}
-              />
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.inputImg}
+              onPress={() => setDescription('')}>
+              {description !== '' && (
+                <Image
+                  source={require('../../../assets/images/icons/deleteInput.png')}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <Text style={styles.secondaryText}>Tasks</Text>
@@ -298,6 +310,7 @@ const CreateNote = () => {
       <View style={styles.footer}>
         <View style={{marginHorizontal: 16, alignItems: 'center'}}>
           <TouchableOpacity
+            disabled={isDisabled}
             onPress={() => saveData()}
             activeOpacity={0.7}
             style={styles.sendBtnContainer}>
@@ -318,7 +331,7 @@ const CreateNote = () => {
               marginHorizontal: 20,
             }}>
             <Text style={{fontSize: 20, fontWeight: '700', color: '#fff'}}>
-              Date
+              Time
             </Text>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -398,11 +411,6 @@ const CreateNote = () => {
             showSixWeeks={true}
             hideArrows={true}
             hideExtraDays={true}
-            style={
-              {
-                // backgroundColor: 'transparent',
-              }
-            }
             theme={{
               calendarBackground: 'transparent',
               textSectionTitleColor: '#ffffff',
@@ -420,21 +428,8 @@ const CreateNote = () => {
               selectedDayBackgroundColor: '#FFC20E',
               selectedDayTextColor: 'rgba(255, 195, 14, 0.26)',
             }}
-            // Callback that gets called when the user selects a day
             onDayPress={day => {
               setSelectedDate(day.dateString);
-            }}
-            // Mark specific dates as marked
-            markedDates={{
-              '2025-04-29': {
-                marked: true,
-                selectedColor: 'blue',
-              },
-              '2012-03-02': {marked: true},
-              '2012-03-03': {
-                marked: true,
-                selectedColor: 'blue',
-              },
             }}
           />
 
@@ -449,7 +444,7 @@ const CreateNote = () => {
                 backgroundColor: '#FFC20E',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: 26,
+                marginTop: 16,
               }}>
               <Text style={{fontWeight: '700', fontSize: 20, color: '#fff'}}>
                 Done

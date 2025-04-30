@@ -11,13 +11,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Layout from '../../components/Layout';
 import {useNavigation} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
 import CustomModal from '../../components/CustomModal';
-import StarRating from 'react-native-star-rating-widget';
-import {AirbnbRating, Rating} from 'react-native-ratings';
 import {TimerPicker} from 'react-native-timer-picker';
-import LinearGradient from 'react-native-linear-gradient';
 
 const CreateRecipe = () => {
   const navigation = useNavigation();
@@ -25,14 +22,11 @@ const CreateRecipe = () => {
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState('');
   const [image, setImage] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
   const [changePhoto, setChangePhoto] = useState(false);
   const [selectCategoryId, setSelectCategoryId] = useState(1);
   const [showTaskInput, setShowTaskInput] = useState(false);
   const [category, setCategory] = useState(null);
-
   const [isVisible, setIsVisible] = useState(false);
-  const [date, setDate] = useState(new Date());
   const [rating, setRating] = useState(0);
   const [checkCategory, setCheckCategory] = useState([
     {
@@ -79,38 +73,7 @@ const CreateRecipe = () => {
     setSelectedTime(timeParts);
   };
 
-  const selectDifficulty = [
-    {
-      id: 1,
-      difficulty: 'Easy',
-      checked: true,
-      image: require('../../../assets/images/icons/rating.png'),
-    },
-    {
-      id: 2,
-      difficulty: 'Easy',
-      checked: true,
-      image: require('../../../assets/images/icons/rating.png'),
-    },
-    {
-      id: 3,
-      difficulty: 'Medium',
-      checked: true,
-      image: require('../../../assets/images/icons/rating.png'),
-    },
-    {
-      id: 4,
-      difficulty: 'Medium',
-      checked: true,
-      image: require('../../../assets/images/icons/rating.png'),
-    },
-    {
-      id: 5,
-      difficulty: 'Hard',
-      checked: true,
-      image: require('../../../assets/images/icons/rating.png'),
-    },
-  ];
+  const isDisabled = heading === '' || description === '' || difficulty === '';
 
   const handleRating = star => {
     setRating(star);
@@ -176,21 +139,22 @@ const CreateRecipe = () => {
 
   return (
     <Layout>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Image
-            source={require('../../../assets/images/icons/backArrow.png')}
-          />
-          <Text style={styles.headerText}>Back</Text>
-        </TouchableOpacity>
-      </View>
       <ScrollView>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Image
+              source={require('../../../assets/images/icons/backArrow.png')}
+            />
+            <Text style={styles.headerText}>Back</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={{marginHorizontal: 16}}>
           <Text style={styles.blockTitleText}>Receipt</Text>
         </View>
@@ -206,9 +170,11 @@ const CreateRecipe = () => {
               onChangeText={setHeading}
             />
             <TouchableOpacity activeOpacity={0.7} style={styles.inputImg}>
-              <Image
-                source={require('../../../assets/images/icons/deleteInput.png')}
-              />
+              {heading !== '' && (
+                <Image
+                  source={require('../../../assets/images/icons/deleteInput.png')}
+                />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -223,9 +189,11 @@ const CreateRecipe = () => {
               onChangeText={setDescription}
             />
             <TouchableOpacity activeOpacity={0.7} style={styles.inputImg}>
-              <Image
-                source={require('../../../assets/images/icons/deleteInput.png')}
-              />
+              {description !== '' && (
+                <Image
+                  source={require('../../../assets/images/icons/deleteInput.png')}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <Text style={styles.secondaryText}>Ingredients</Text>
@@ -354,6 +322,7 @@ const CreateRecipe = () => {
       <View style={styles.footer}>
         <View style={{marginHorizontal: 16, alignItems: 'center'}}>
           <TouchableOpacity
+            disabled={isDisabled}
             onPress={() => saveData()}
             activeOpacity={0.7}
             style={styles.sendBtnContainer}>
@@ -363,7 +332,6 @@ const CreateRecipe = () => {
           </TouchableOpacity>
         </View>
       </View>
-
       {isVisible && (
         <CustomModal visible={true}>
           <View
