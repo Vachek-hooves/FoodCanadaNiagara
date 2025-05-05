@@ -19,6 +19,7 @@ const ContactWithUs = () => {
   const [description, setDescription] = useState('');
 
   const sendForm = () => {
+    navigation.goBack();
     setName(''), setNumber(''), setEmail(''), setDescription('');
   };
 
@@ -40,9 +41,9 @@ const ContactWithUs = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={{marginHorizontal: 16}}>
+        {/* <View style={{marginHorizontal: 16}}>
           <Text style={styles.blockTitleText}>Contact with us</Text>
-        </View>
+        </View> */}
 
         <View style={{marginHorizontal: 16}}>
           <Text style={styles.secondaryText}>First name</Text>

@@ -1,5 +1,4 @@
 import {NavigationContainer} from '@react-navigation/native';
-
 import StackNav from './src/navigation/Stack';
 import {StoreProvider} from './src/store/context';
 import Onboard from './src/screen/stack/Onboard';

@@ -232,7 +232,7 @@ const Settings = () => {
                 source={require('../../../assets/images/icons/nextArrow.png')}
               />
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.navigate('ContactWithUs')}
               activeOpacity={0.7}
               style={styles.settingsContainer}>
@@ -247,7 +247,7 @@ const Settings = () => {
               <Image
                 source={require('../../../assets/images/icons/nextArrow.png')}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {saveProfile && (
               <View>

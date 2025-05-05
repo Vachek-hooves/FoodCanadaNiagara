@@ -266,7 +266,7 @@ const Onboard = () => {
                       source={require('../../../assets/images/icons/nextArrow.png')}
                     />
                   </View>
-                  <View activeOpacity={0.7} style={styles.settingsContainer}>
+                  {/* <View activeOpacity={0.7} style={styles.settingsContainer}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Image
                         source={require('../../../assets/images/icons/contactWithUs.png')}
@@ -278,7 +278,7 @@ const Onboard = () => {
                     <Image
                       source={require('../../../assets/images/icons/nextArrow.png')}
                     />
-                  </View>
+                  </View> */}
                 </View>
                 <View
                   style={{

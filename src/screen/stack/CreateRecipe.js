@@ -31,6 +31,9 @@ const CreateRecipe = () => {
   const [min, setMin] = useState(0);
   const [hours, setHours] = useState(0);
   const [sec, setSec] = useState(0);
+  const [showImageError, setShowImageError] = useState(false);
+  const [showHeadingError, setShowHeadingError] = useState(false);
+  const [showDescriptionError, setShowDescriptionError] = useState(false);
   const [checkCategory, setCheckCategory] = useState([
     {
       id: 1,
@@ -87,8 +90,6 @@ const CreateRecipe = () => {
     setSelectedTime(timeParts);
   };
 
-  const isDisabled = heading === '' || description === '';
-
   const handleRating = star => {
     setRating(star);
   };
@@ -105,8 +106,8 @@ const CreateRecipe = () => {
     launchImageLibrary(options, response => {
       if (response.didCancel) return;
       setImage(response.assets[0].uri);
-
       setChangePhoto(true);
+      setShowImageError(false);
     });
   };
 
@@ -129,6 +130,33 @@ const CreateRecipe = () => {
   };
 
   const saveData = async () => {
+    let hasError = false;
+    
+    if (heading === '') {
+      setShowHeadingError(true);
+      hasError = true;
+    } else {
+      setShowHeadingError(false);
+    }
+
+    if (description === '') {
+      setShowDescriptionError(true);
+      hasError = true;
+    } else {
+      setShowDescriptionError(false);
+    }
+
+    if (image === '') {
+      setShowImageError(true);
+      hasError = true;
+    } else {
+      setShowImageError(false);
+    }
+
+    if (hasError) {
+      return;
+    }
+
     const newData = {
       id: Date.now(),
       description,
@@ -137,7 +165,6 @@ const CreateRecipe = () => {
       rating,
       image,
       selectCategoryId,
-      //   selectedDate,
     };
     try {
       const jsonValue = await AsyncStorage.getItem('myRecipe');
@@ -174,14 +201,17 @@ const CreateRecipe = () => {
         </View>
 
         <View style={{marginHorizontal: 16}}>
-          <Text style={styles.secondaryText}>Heading</Text>
+          <Text style={styles.secondaryText}>Heading *</Text>
           <View>
             <TextInput
               style={styles.input}
               placeholder="Heading"
               value={heading}
               placeholderTextColor="rgba(60, 60, 67, 0.6)"
-              onChangeText={setHeading}
+              onChangeText={text => {
+                setHeading(text);
+                setShowHeadingError(false);
+              }}
             />
             <TouchableOpacity activeOpacity={0.7} style={styles.inputImg}>
               {heading !== '' && (
@@ -191,8 +221,11 @@ const CreateRecipe = () => {
               )}
             </TouchableOpacity>
           </View>
+          {showHeadingError && (
+            <Text style={styles.errorText}>Please enter a heading</Text>
+          )}
 
-          <Text style={styles.secondaryText}>Description</Text>
+          <Text style={styles.secondaryText}>Description *</Text>
           <View>
             <TextInput
               textAlignVertical="top"
@@ -200,7 +233,10 @@ const CreateRecipe = () => {
               placeholder="Description"
               value={description}
               placeholderTextColor="rgba(60, 60, 67, 0.6)"
-              onChangeText={setDescription}
+              onChangeText={text => {
+                setDescription(text);
+                setShowDescriptionError(false);
+              }}
             />
             <TouchableOpacity activeOpacity={0.7} style={styles.inputImg}>
               {description !== '' && (
@@ -210,6 +246,9 @@ const CreateRecipe = () => {
               )}
             </TouchableOpacity>
           </View>
+          {showDescriptionError && (
+            <Text style={styles.errorText}>Please enter a description</Text>
+          )}
           <Text style={styles.secondaryText}>Ingredients</Text>
           {showTaskInput ? (
             <View>
@@ -271,7 +310,7 @@ const CreateRecipe = () => {
             <Image source={{uri: image}} style={styles.userImg} />
           ) : (
             <View>
-              <Text style={styles.secondaryText}>Cover</Text>
+              <Text style={styles.secondaryText}>Cover *</Text>
               <TouchableOpacity
                 onPress={() => imagePicker()}
                 activeOpacity={0.7}
@@ -282,6 +321,9 @@ const CreateRecipe = () => {
                   tintColor={'#1C5839'}
                 />
               </TouchableOpacity>
+              {showImageError && (
+                <Text style={styles.errorText}>Please add a cover image</Text>
+              )}
             </View>
           )}
 
@@ -350,7 +392,6 @@ const CreateRecipe = () => {
       <View style={styles.footer}>
         <View style={{marginHorizontal: 16, alignItems: 'center'}}>
           <TouchableOpacity
-            disabled={isDisabled}
             onPress={() => saveData()}
             activeOpacity={0.7}
             style={styles.sendBtnContainer}>
@@ -584,6 +625,12 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     paddingVertical: 8,
     paddingHorizontal: 12,
+  },
+  errorText: {
+    color: '#FF3B30',
+    fontSize: 14,
+    marginTop: 5,
+    marginBottom: 10,
   },
 });
 
